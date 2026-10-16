@@ -19,6 +19,14 @@
 <header class="top"><div class="brand">GO:Piano · Performance</div><div class="status" id="midiStatus">MIDI не подключён</div></header>
 <main>
 <section class="card">
+<div class="cardhead">MIDI</div>
+<div class="midirow"><div class="field"><label for="midiOutput">MIDI Output</label><select id="midiOutput"><option value="">Not connected</option></select></div><button class="btn" id="connectBtn">Connect</button></div>
+<div class="buttons" style="margin-top:7px"><button class="btn primary" id="sendBtn" disabled>Send to GO:Piano</button></div>
+<div class="notice" id="midiNotice">Подключи MIDI и выбери выход.</div>
+<div class="diagnostic" id="diagnostic"></div>
+<details><summary class="outhead">HEX · <span id="messageCount">5 messages</span></summary><pre class="output" id="output" aria-live="polite"></pre><div class="outbuttons"><button class="btn" id="copyBtn">Copy HEX</button><button class="btn" id="downloadBtn">Save TXT</button></div></details>
+</section>
+<section class="card">
 <div class="cardhead">Mode</div>
 <div class="modes">
 <label class="mode"><input type="radio" name="mode" value="Single Voice" checked><span>Single Voice</span></label>
@@ -42,14 +50,7 @@
 <div class="grid2"><div class="field"><label>Volume</label><div class="knobwrap"><div class="knob" id="vol2Knob" role="slider" tabindex="0" aria-label="Part 2 Volume"></div><input class="knobnum" id="vol2" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div><div class="field"><label for="oct2">Octave Shift</label><select id="oct2"></select></div></div>
 </div>
 </section>
-<section class="card">
-<div class="cardhead">MIDI</div>
-<div class="midirow"><div class="field"><label for="midiOutput">MIDI Output</label><select id="midiOutput"><option value="">Not connected</option></select></div><button class="btn" id="connectBtn">Connect</button></div>
-<div class="buttons" style="margin-top:7px"><button class="btn primary" id="sendBtn" disabled>Send to GO:Piano</button></div>
-<div class="notice" id="midiNotice">Подключи MIDI и выбери выход. При отправке сообщения идут по одному с паузой.</div>
-<div class="diagnostic" id="diagnostic"></div>
-<details><summary class="outhead">HEX · <span id="messageCount">5 messages</span></summary><pre class="output" id="output" aria-live="polite"></pre><div class="outbuttons"><button class="btn" id="copyBtn">Copy HEX</button><button class="btn" id="downloadBtn">Save TXT</button></div></details>
-</section>
+
 </main>
 </div>
 <script>
@@ -85,7 +86,7 @@ function chosenMidiOutput(){return midiAccess?midiAccess.outputs.get($("midiOutp
 function updateMidiUi(){const out=chosenMidiOutput();$("sendBtn").disabled=!out;$("midiStatus").textContent=out?(out.name||"MIDI connected"):(midiAccess?"MIDI connected":"MIDI не подключён");diag();}
 $("connectBtn").addEventListener("click",async()=>{diag();if(!navigator.requestMIDIAccess){$("midiNotice").textContent="Web MIDI API недоступен в этом браузере. На iOS это может зависеть от конкретного браузера.";return;}$("connectBtn").disabled=true;$("connectBtn").textContent="…";try{midiAccess=await navigator.requestMIDIAccess({sysex:true});midiAccess.onstatechange=()=>{refreshMidiOutputs();};refreshMidiOutputs();$("midiNotice").textContent="Подключение выполнено. Если Bluetooth-устройство не появляется, проверь, подключено ли оно в самом MIDI-браузере/настройках системы, и нажми Connect ещё раз.";}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;$("diagnostic").textContent=`${window.isSecureContext?"secure":"NOT secure"} · ${err.name||"Error"}`;}finally{$("connectBtn").disabled=false;$("connectBtn").textContent="Connect";}});
 $("midiOutput").addEventListener("change",updateMidiUi);
-$("sendBtn").addEventListener("click",async()=>{const out=chosenMidiOutput();if(!out)return;const messages=$("output").textContent.trim().split(/\s*\n\s*\n\s*/).filter(Boolean);const btn=$("sendBtn");btn.disabled=true;try{for(let i=0;i<messages.length;i++){const bytes=messages[i].trim().split(/\s+/).map(v=>parseInt(v,16));if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in message "+(i+1));$("midiNotice").textContent=`Отправка SysEx ${i+1} из ${messages.length}…`;out.send(bytes);if(i<messages.length-1)await new Promise(resolve=>setTimeout(resolve,250));}$("midiNotice").textContent=`Переданы все ${messages.length} SysEx-сообщений в ${out.name||"MIDI output"}.`;}catch(err){$("midiNotice").textContent=`Send error: ${err.name||"Error"}: ${err.message||String(err)}`;}finally{btn.disabled=!chosenMidiOutput();}});
+$("sendBtn").addEventListener("click",async()=>{const out=chosenMidiOutput();if(!out)return;const messages=$("output").textContent.trim().split(/\s*\n\s*\n\s*/).filter(Boolean);const btn=$("sendBtn");btn.disabled=true;try{for(let i=0;i<messages.length;i++){const bytes=messages[i].trim().split(/\s+/).map(v=>parseInt(v,16));if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in message "+(i+1));$("midiNotice").textContent=`Отправка SysEx ${i+1} из ${messages.length}…`;out.send(bytes);}$("midiNotice").textContent=`Переданы все ${messages.length} SysEx-сообщений в ${out.name||"MIDI output"}.`;}catch(err){$("midiNotice").textContent=`Send error: ${err.name||"Error"}: ${err.message||String(err)}`;}finally{btn.disabled=!chosenMidiOutput();}});
 diag();updateOutput();
 </script>
 </body>
