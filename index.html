@@ -159,9 +159,11 @@ function requestPerformanceState(isHome=false){
 function setPatchFromReply(msb,lsb,pcMinusOne){const p=PATCHES.find(x=>x.msb===msb&&x.lsb===lsb&&x.pc-1===pcMinusOne);if(!p)return false;resetModForPatch(1);$("cat1").value=p.category;fillPatchSelect(1,p.name);updateResonanceAvailability();updateOutput();resonanceMessagesForPatch().forEach(sendRawNow);return true;}
 function handleMidiMessage(event){
  const d=event&&event.data;if(!d||!d.length)return;
- // HOME starts with a distinctive CC 0 / value 0x55 on channel 16.
- if(d[0]===0xBF&&d.length===3&&d[1]===0x00&&d[2]===0x55){
-  setTimeout(()=>requestPerformanceState(true),180);return;
+ // HOME normally starts with CC 0 / value 0x55 on channel 16.
+ // Accept a message with extra bytes too, in case a MIDI bridge groups data.
+ if((d[0]&0xF0)===0xB0&&d.length>=3&&d[1]===0x00&&d[2]===0x55){
+  $('midiNotice').textContent='HOME распознана — перечитываю параметры GO:Piano…';
+  setTimeout(()=>requestPerformanceState(true),300);return;
  }
  if(d[0]!==0xF0||d.length<13||d[1]!==0x41||d[6]!==0x3D||d[7]!==0x12)return;
  // Performance Control Channel: address 02 00 00 09, one data byte.
@@ -218,7 +220,9 @@ function selectUserPerformance(slot){
   out.send([0xB0|ch,0x00,0x55]);
   out.send([0xB0|ch,0x20,0x00]);
   out.send([0xC0|ch,slot]);
-  $("midiNotice").textContent=`Вызван User Performance ${String(slot+1).padStart(3,"0")}.`;
+  $("midiNotice").textContent=`Вызван User Performance ${String(slot+1).padStart(3,"0")}; считываю его параметры…`;
+  // Give the instrument time to switch Performance before querying its state.
+  setTimeout(()=>requestPerformanceState(false),350);
  }catch(err){$("midiNotice").textContent=`Preset recall error: ${err.name||"Error"}: ${err.message||String(err)}`;}
 }
 function buildSaveMessages(slot,name){
