@@ -239,20 +239,21 @@ function resetToDefaultPreset(){
  resonancePreference=true;updateResonanceAvailability();
  modValues[1]=0;modValues[2]=0;syncModWheel();updateOutput();
  if(!out){$("midiNotice").textContent="Интерфейс сброшен к default. Подключи MIDI, чтобы применить значения к GO:Piano.";return;}
- // Each DT1 write is sent separately with a short gap so the instrument can process it.
- // Patch writes include the volume byte; Reverb 4 is raw value 0x30 (48 decimal).
+ // Use the exact DT1 sequence supplied by the user. Do not append extra bytes
+ // to the octave writes: each command below writes only the stated parameter.
  const messages=[
-  message([0x50,0x0C],[0x00]),             // Single Tone: Part 1 lower range
-  message([0x51,0x01],[0x00]),             // Part 2 off
-  message([0x51,0x0D],[0x7F]),             // Part 2 upper range reset
-  message([0x06,0x01],[0x30]),             // Reverb Level 4
-  message([0x20,0x04],[0x00,0x44,0x00,0x64]), // Part 1: GO Grand, volume 100
-  message([0x21,0x04],[0x57,0x49,0x25,0x64]), // Part 2: AcousticBass, volume 100
-  message([0x50,0x00],[0x40,0x01]),        // Part 1 octave 0, enabled
-  message([0x51,0x00],[0x40,0x00]),        // Part 2 octave 0, disabled in Single Tone
-  EFFECT_STRUCTURE,
-  RESONANCE_ON,
-  RESONANCE_ON_EXTRA
+  message([0x50,0x0C],[0x00]),             // Single Tone: Part 1 KeyboardRangeLower = C-1
+  message([0x51,0x01],[0x00]),             // Part 2 Switch = OFF
+  message([0x51,0x0D],[0x7F]),             // Part 2 KeyboardRangeUpper = G9
+  message([0x50,0x0C],[0x3C]),             // Split Point C4: Part 1 lower range
+  message([0x51,0x0D],[0x3B]),             // Split Point C4: Part 2 upper range B3
+  message([0x06,0x01],[0x30]),             // Reverb Level 4 (raw 48)
+  message([0x20,0x04],[0x00,0x44,0x00,0x64]), // Part 1 GO Grand, volume 100
+  message([0x50,0x00],[0x40]),             // Part 1 Octave Shift = 0
+  RESONANCE_ON,                             // Part 1 Piano Resonance type
+  RESONANCE_ON_EXTRA,                       // Part 1 Piano Resonance switch ON
+  message([0x21,0x04],[0x57,0x49,0x25,0x64]), // Part 2 AcousticBass, volume 100
+  message([0x51,0x00],[0x40])              // Part 2 Octave Shift = 0
  ];
  let i=0;
  const sendNext=()=>{
