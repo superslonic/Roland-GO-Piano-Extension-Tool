@@ -103,8 +103,24 @@ function appendTxLog(data){
 function sendLogged(out,data){out.send(data);appendTxLog(data);}
 $("clearTxLogBtn").addEventListener("click",()=>{txLogCount=0;$("txLog").textContent="Журнал очищен. Новые исходящие команды появятся здесь.";});
 $("copyTxLogBtn").addEventListener("click",()=>{const text=$("txLog").textContent; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{$("midiNotice").textContent="Журнал исходящих команд скопирован.";}).catch(()=>{$("midiNotice").textContent="Не удалось скопировать автоматически — выдели текст журнала и скопируй вручную.";});}else{$("midiNotice").textContent="Автокопирование недоступно — выдели текст журнала и скопируй вручную.";}});
-function flushAutoSend(){const out=chosenMidiOutput();const indexes=[...pendingMessages].sort((a,b)=>a-b),raw=pendingRaw.splice(0);pendingMessages.clear();if(!out||(!indexes.length&&!raw.length))return;const messages=$("output").textContent.trim().split(/\s*\n\s*\n\s*/).filter(Boolean);let sent=0;try{indexes.forEach(i=>{const bytes=parseHex(messages[i]);if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in message "+(i+1));sendLogged(out, bytes);sent++;});raw.forEach(str=>{const bytes=parseHex(str);if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in extra message");sendLogged(out, bytes);sent++;});$('midiNotice').textContent=`Live update · отправлено ${sent} сообщ.`;}catch(err){$('midiNotice').textContent=`Live send error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
-function message(address,data){return ["F0","41","10","00","00","00","3D","12","10","00",...address.map(x=>hex(x)),...data.map(x=>typeof x==="string"?x.toUpperCase():hex(x)),"F7"].join(" ");}
+function flushAutoSend(){const out=chosenMidiOutput();const indexes=[...pendingMessages].sort((a,b)=>a-b),raw=pendingRaw.splice(0);pendingMessages.clear();if(!out||(!indexes.length&&!raw.length))return;const messages=$("output").textContent.trim().split(/\s*\n\s*\n\s*/).filter(Boolean);let sent=0;try{indexes.forEach(i=>{const bytes=parseHex(messages[i]);if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in message "+(i+1));sendLogged(out, bytes);sent++;});raw.forEach(str=>{const bytes=checkedOutgoing(str);if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in extra message");sendLogged(out, bytes);sent++;});$('midiNotice').textContent=`Live update · отправлено ${sent} сообщ.`;}catch(err){$('midiNotice').textContent=`Live send error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
+function message(address,data){
+ const addressBytes=[0x10,0x00,...address];
+ const dataBytes=data.map(x=>typeof x==="string"?parseInt(x,16):x);
+ const checksum=(128-([...addressBytes,...dataBytes].reduce((total,value)=>total+value,0)%128))%128;
+ return ["F0","41","10","00","00","00","3D","12",...addressBytes.map(x=>hex(x)),...dataBytes.map(x=>hex(x)),hex(checksum),"F7"].join(" ");
+}
+// Raw DT1 strings in the app historically used 00 as a checksum placeholder.
+// Recalculate it at send time, preserving all address and data bytes.
+function checkedOutgoing(str){
+ const bytes=parseHex(str);
+ if(bytes.length>=13&&bytes[0]===0xF0&&bytes[1]===0x41&&bytes[6]===0x3D&&bytes[7]===0x12&&bytes[bytes.length-1]===0xF7){
+  const payload=bytes.slice(8,-2);
+  const checksum=(128-(payload.reduce((total,value)=>total+value,0)%128))%128;
+  bytes[bytes.length-2]=checksum;
+ }
+ return bytes;
+}
 const RESONANCE_ON="F0 41 10 00 00 00 3D 12 10 00 0A 00 4E 00 F7";
 const RESONANCE_ON_EXTRA="F0 41 10 00 00 00 3D 12 01 00 00 0C 01 00 F7";
 const RESONANCE_OFF="F0 41 10 00 00 00 3D 12 10 00 0A 00 00 00 F7";
@@ -141,7 +157,7 @@ function changeReverb(delta){const v=Math.max(0,Math.min(10,Number($("reverb").v
 function bindRepeatButton(id,delta){const el=$(id);let delay=null,repeat=null,suppressClick=false;const stop=()=>{if(delay!==null)clearTimeout(delay);if(repeat!==null)clearInterval(repeat);delay=null;repeat=null;};el.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;e.preventDefault();suppressClick=true;changeReverb(delta);delay=setTimeout(()=>{repeat=setInterval(()=>changeReverb(delta),110);},420);});["pointerup","pointercancel","pointerleave"].forEach(name=>el.addEventListener(name,stop));el.addEventListener("click",()=>{if(suppressClick){suppressClick=false;return;}changeReverb(delta);});}bindRepeatButton("reverbMinus",-1);bindRepeatButton("reverbPlus",1);
 $("pianoResonance").addEventListener("change",()=>{if(resonanceAvailable(selectedPatch(1))){resonancePreference=$("pianoResonance").checked;}updateResonanceAvailability();sendResonanceForCurrentPatch();});
 [1,2].forEach(part=>{["prev","next"].forEach(dir=>$(dir+"Patch"+part).addEventListener("click",()=>choosePatch(part,dir==="prev"?-1:1)));});
-function selectActivePart(part){if(mode()!=="Single Tone"||activePart===part)return;activePart=part;updateOutput();syncModWheel();const out=chosenMidiOutput();if(out){const list=activationMessages(part);try{list.forEach(s=>sendLogged(out, parseHex(s)));$("midiNotice").textContent=`Активен Part ${part}.`;}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;}}}
+function selectActivePart(part){if(mode()!=="Single Tone"||activePart===part)return;activePart=part;updateOutput();syncModWheel();const out=chosenMidiOutput();if(out){const list=activationMessages(part);try{list.forEach(s=>sendLogged(out, checkedOutgoing(s)));$("midiNotice").textContent=`Активен Part ${part}.`;}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;}}}
 $("selectPart1").addEventListener("click",()=>selectActivePart(1));$("selectPart2").addEventListener("click",()=>selectActivePart(2));
 [ ["part1Card",1], ["part2Card",2] ].forEach(([id,part])=>$(id).addEventListener("click",e=>{if(mode()!=="Single Tone")return;if(e.target.closest("select, input, button, label, a"))return;selectActivePart(part);}));
 document.querySelectorAll('input[name="mode"]').forEach(el=>el.addEventListener("change",()=>{if(mode()==="Single Tone")activePart=1;updateOutput();scheduleAutoSend([3,4]);syncModWheel();}));
@@ -152,7 +168,7 @@ function selectMidiInput(){const inputs=allInputs(),out=chosenMidiOutput();if(cu
 function refreshMidiOutputs(){if(!midiAccess)return;const sel=$("midiOutput"),prev=sel.value,oldOut=prev?midiAccess.outputs.get(prev):null,prevName=oldOut&&oldOut.name||"";const outputs=[];if(midiAccess.outputs&&typeof midiAccess.outputs.forEach==="function")midiAccess.outputs.forEach(out=>outputs.push(out));sel.innerHTML="";if(!outputs.length){const o=document.createElement("option");o.value="";o.textContent="No MIDI outputs found";sel.appendChild(o);$("midiStatus").textContent="Нет MIDI-выходов";diag();return;}outputs.forEach(out=>{const o=document.createElement("option");o.value=out.id;o.textContent=out.name||("MIDI · "+out.id);sel.appendChild(o);});if(outputs.some(o=>o.id===prev)&&!(/session\s*1/i.test(prevName)&&outputs.some(o=>/bluetooth/i.test(o.name||""))))sel.value=prev;else{const likely=outputs.find(o=>/bluetooth/i.test(o.name||""))||outputs.find(o=>/go.?piano|roland|midi/i.test(o.name||""))||outputs[0];sel.value=likely.id;}updateMidiUi();selectMidiInput();diag();}
 function chosenMidiOutput(){return midiAccess&&midiAccess.outputs?midiAccess.outputs.get($("midiOutput").value)||null:null;}
 function updateMidiUi(){const out=chosenMidiOutput();$("midiStatus").textContent=out?(out.name||"MIDI connected"):(midiAccess?"MIDI connected":"MIDI не подключён");diag();}
-function sendRawNow(str){const out=chosenMidiOutput();if(!out)return false;try{sendLogged(out, parseHex(str));return true;}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;return false;}}
+function sendRawNow(str){const out=chosenMidiOutput();if(!out)return false;try{sendLogged(out, checkedOutgoing(str));return true;}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;return false;}}
 function rq(address,count){return parseHex("F0 41 10 00 00 00 3D 11 "+address.map(hex).join(" ")+" 00 00 "+hex(count)+" 00 F7");}
 const READ_REQUESTS=[
  "F0 41 10 00 00 00 3D 11 10 00 06 01 00 00 00 01 00 F7",
@@ -278,7 +294,7 @@ function resetToDefaultPreset(){
    setTimeout(()=>requestPerformanceState(false),350);
    return;
   }
-  try{sendLogged(out, parseHex(messages[i++]));setTimeout(sendNext,35);}
+  try{sendLogged(out, checkedOutgoing(messages[i++]));setTimeout(sendNext,35);}
   catch(err){$("midiNotice").textContent=`Default reset error: ${err.name||"Error"}: ${err.message||String(err)}`;}
  };
  $("midiNotice").textContent="Восстанавливаю default: отправляю команды по очереди…";
@@ -370,7 +386,7 @@ $("presetSelect").addEventListener("change",()=>{
 });
 $("savePresetBtn").addEventListener("click",openSaveDialog);
 
-function initializeDevice(){const out=chosenMidiOutput();if(!out)return;setCat("cat2","GO:Piano");fillPatchSelect(2,"AcousticBass");$("vol2").value="100";$("vol2Slider").value="100";updateOutput();updateResonanceAvailability();try{sendLogged(out, parseHex(EFFECT_STRUCTURE));sendLogged(out, parseHex(PART2_INIT_PATCH));resonanceMessagesForPatch().forEach(s=>sendLogged(out, parseHex(s)));READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();requestPresetNames();initAlreadySent=true;$("midiNotice").textContent=currentMidiInput?"Подключено. Инициализация отправлена; считываю параметры устройства…":"Подключено. Инициализация отправлена, но MIDI-вход не найден — чтение параметров может быть недоступно.";}catch(err){$("midiNotice").textContent=`Init error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
+function initializeDevice(){const out=chosenMidiOutput();if(!out)return;setCat("cat2","GO:Piano");fillPatchSelect(2,"AcousticBass");$("vol2").value="100";$("vol2Slider").value="100";updateOutput();updateResonanceAvailability();try{sendLogged(out, checkedOutgoing(EFFECT_STRUCTURE));sendLogged(out, checkedOutgoing(PART2_INIT_PATCH));resonanceMessagesForPatch().forEach(s=>sendLogged(out, checkedOutgoing(s)));READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();requestPresetNames();initAlreadySent=true;$("midiNotice").textContent=currentMidiInput?"Подключено. Инициализация отправлена; считываю параметры устройства…":"Подключено. Инициализация отправлена, но MIDI-вход не найден — чтение параметров может быть недоступно.";}catch(err){$("midiNotice").textContent=`Init error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
 $("connectBtn").addEventListener("click",async()=>{diag();if(!navigator.requestMIDIAccess){$("midiNotice").textContent="Web MIDI API недоступен в этом браузере. На iOS это может зависеть от конкретного браузера.";return;}$("connectBtn").disabled=true;$("connectBtn").textContent="…";try{midiAccess=await navigator.requestMIDIAccess({sysex:true});midiAccess.onstatechange=()=>{refreshMidiOutputs();};refreshMidiOutputs();selectMidiInput();if(chosenMidiOutput())initializeDevice();$("midiNotice").textContent="Подключение выполнено.";}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;$("diagnostic").textContent=`${window.isSecureContext?"secure":"NOT secure"} · ${err.name||"Error"}`;}finally{$("connectBtn").disabled=false;$("connectBtn").textContent="Connect";}});
 $("midiOutput").addEventListener("change",()=>{updateMidiUi();selectMidiInput();if(chosenMidiOutput())initializeDevice();});
 resonancePreference=defaultResonance(selectedPatch(1));updateResonanceAvailability();updatePresetOptions();diag();updateOutput();syncModWheel();
