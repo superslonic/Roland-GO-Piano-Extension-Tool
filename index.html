@@ -276,8 +276,7 @@ function resetToDefaultPreset(){
   message([0x50,0x0C],[0x00]),             // Single Tone: Part 1 KeyboardRangeLower = C-1
   message([0x51,0x01],[0x00]),             // Part 2 Switch = OFF
   message([0x51,0x0D],[0x7F]),             // Part 2 KeyboardRangeUpper = G9
-  message([0x50,0x0C],[0x3C]),             // Split Point C4: Part 1 lower range
-  message([0x51,0x0D],[0x3B]),             // Split Point C4: Part 2 upper range B3
+  // Do not write Split Point or split ranges when recalling default.
   message([0x06,0x01],[0x30]),             // Reverb Level 4 (raw 48)
   message([0x20,0x04],[0x00,0x44,0x00,0x64]), // Part 1 GO Grand, volume 100
   message([0x50,0x00],[0x40]),             // Part 1 Octave Shift = 0
