@@ -227,7 +227,7 @@ function selectUserPerformance(slot){
 }
 function resetToDefaultPreset(){
  const out=chosenMidiOutput();
- // Restore the app's initial state in the UI even if MIDI is not connected.
+ // Keep the UI on the known initial state while the instrument is reset.
  document.querySelector('input[name="mode"][value="Single Tone"]').checked=true;
  activePart=1;
  $("cat1").value="GO:Piano";fillPatchSelect(1,"GO Grand");
@@ -239,27 +239,36 @@ function resetToDefaultPreset(){
  resonancePreference=true;updateResonanceAvailability();
  modValues[1]=0;modValues[2]=0;syncModWheel();updateOutput();
  if(!out){$("midiNotice").textContent="Интерфейс сброшен к default. Подключи MIDI, чтобы применить значения к GO:Piano.";return;}
- try{
-  // Use the individual DT1 addresses documented for each control.
-  const messages=[
-   message([0x50,0x0C],[0x00]),             // Single Tone: clear Part 1 lower range
-   message([0x51,0x01],[0x00]),             // disable Part 2
-   message([0x51,0x0D],[0x7F]),             // reset Part 2 upper range
-   message([0x06,0x01],[0x48]),             // Reverb Level 4
-   message([0x20,0x04],[0x00,0x44,0x00]),  // Part 1: GO Grand
-   message([0x20,0x07],[0x64]),             // Part 1 Volume 100
-   message([0x21,0x04],[0x57,0x49,0x25]),  // Part 2: AcousticBass
-   message([0x21,0x07],[0x64]),             // Part 2 Volume 100
-   message([0x50,0x00],[0x40]),             // Part 1 Octave Shift 0
-   message([0x51,0x00],[0x40]),             // Part 2 Octave Shift 0
-   EFFECT_STRUCTURE
-  ];
-  messages.forEach(s=>out.send(typeof s==="string"?parseHex(s):parseHex(s)));
-  [RESONANCE_ON,RESONANCE_ON_EXTRA].forEach(s=>out.send(parseHex(s)));
-  sendModValue(1,0);
-  $("midiNotice").textContent="Default восстановлен: Single Tone, GO Grand + AcousticBass, громкости 100, октавы 0, Reverb 4.";
- }catch(err){$("midiNotice").textContent=`Default reset error: ${err.name||"Error"}: ${err.message||String(err)}`;}
+ // Each DT1 write is sent separately with a short gap so the instrument can process it.
+ // Patch writes include the volume byte; Reverb 4 is raw value 0x30 (48 decimal).
+ const messages=[
+  message([0x50,0x0C],[0x00]),             // Single Tone: Part 1 lower range
+  message([0x51,0x01],[0x00]),             // Part 2 off
+  message([0x51,0x0D],[0x7F]),             // Part 2 upper range reset
+  message([0x06,0x01],[0x30]),             // Reverb Level 4
+  message([0x20,0x04],[0x00,0x44,0x00,0x64]), // Part 1: GO Grand, volume 100
+  message([0x21,0x04],[0x57,0x49,0x25,0x64]), // Part 2: AcousticBass, volume 100
+  message([0x50,0x00],[0x40,0x01]),        // Part 1 octave 0, enabled
+  message([0x51,0x00],[0x40,0x00]),        // Part 2 octave 0, disabled in Single Tone
+  EFFECT_STRUCTURE,
+  RESONANCE_ON,
+  RESONANCE_ON_EXTRA
+ ];
+ let i=0;
+ const sendNext=()=>{
+  if(i>=messages.length){
+   sendModValue(1,0);
+   $("midiNotice").textContent="Команды default отправлены; перечитываю параметры GO:Piano…";
+   setTimeout(()=>requestPerformanceState(false),350);
+   return;
+  }
+  try{out.send(parseHex(messages[i++]));setTimeout(sendNext,35);}
+  catch(err){$("midiNotice").textContent=`Default reset error: ${err.name||"Error"}: ${err.message||String(err)}`;}
+ };
+ $("midiNotice").textContent="Восстанавливаю default: отправляю команды по очереди…";
+ sendNext();
 }
+
 function buildSaveMessages(slot,name){
  const p1=selectedPatch(1),p2=selectedPatch(2);
  if(!p1||!p2)throw new Error("Не удалось определить патч Part 1 или Part 2.");
