@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#101522">
-<title>go:piano helper</title>
+<title>go:piano helper v27</title>
 <style>
 :root{color-scheme:dark;--bg:#10141b;--panel:#1b222c;--line:#37414f;--text:#f1f4f8;--muted:#a5afbd;--accent:#8bbcff;--green:#8ce0b6}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.25 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -107,34 +107,31 @@ $("copyTxLogBtn").addEventListener("click",()=>{const text=$("txLog").textConten
 function flushAutoSend(){const out=chosenMidiOutput();const indexes=[...pendingMessages].sort((a,b)=>a-b),raw=pendingRaw.splice(0);pendingMessages.clear();if(!out||(!indexes.length&&!raw.length))return;let sent=0;try{raw.forEach(str=>{const bytes=checkedOutgoing(str);if(bytes.some(n=>!Number.isInteger(n)||n<0||n>255))throw new Error("Invalid HEX in queued message");sendLogged(out,bytes);sent++;});$('midiNotice').textContent=`Live update · отправлено ${sent} сообщ.`;if(sent)scheduleStateRead();}catch(err){$('midiNotice').textContent=`Live send error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
 function messageFullAddress(addressBytes,data){
  const dataBytes=data.map(x=>typeof x==="string"?parseInt(x,16):x);
- const checksum=(128-([...addressBytes,...dataBytes].reduce((total,value)=>total+value,0)%128))%128;
- return ["F0","41","10","00","00","00","3D","12",...addressBytes.map(x=>hex(x)),...dataBytes.map(x=>hex(x)),hex(checksum),"F7"].join(" ");
+ // GO:Piano accepts any checksum; project specification requires 00 consistently.
+ return ["F0","41","10","00","00","00","3D","12",...addressBytes.map(x=>hex(x)),...dataBytes.map(x=>hex(x)),"00","F7"].join(" ");
 }
 function message(address,data){return messageFullAddress([0x10,0x00,...address],data);}
-// Raw DT1 strings in the app historically used 00 as a checksum placeholder.
-// Recalculate it at send time, preserving all address and data bytes.
-function checkedOutgoing(str){
- const bytes=parseHex(str);
- if(bytes.length>=13&&bytes[0]===0xF0&&bytes[1]===0x41&&bytes[6]===0x3D&&bytes[7]===0x12&&bytes[bytes.length-1]===0xF7){
-  const payload=bytes.slice(8,-2);
-  const checksum=(128-(payload.reduce((total,value)=>total+value,0)%128))%128;
-  bytes[bytes.length-2]=checksum;
- }
- return bytes;
-}
+// Preserve outgoing bytes exactly. DT1 and RQ1 checksum is deliberately always 00.
+function checkedOutgoing(str){return parseHex(str);}
 const RESONANCE_ON="F0 41 10 00 00 00 3D 12 10 00 0A 00 4E 00 F7";
 const RESONANCE_ON_EXTRA="F0 41 10 00 00 00 3D 12 01 00 00 0C 01 00 F7";
 const RESONANCE_OFF="F0 41 10 00 00 00 3D 12 10 00 0A 00 00 00 F7";
 const EFFECT_STRUCTURE="F0 41 10 00 00 00 3D 12 10 00 00 37 02 00 F7";
-const PART2_INIT_PATCH="F0 41 10 00 00 00 3D 12 10 00 21 04 57 49 25 64 00 F7";
-function activationMessages(part){if(part===2)return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[0x7F]),message([0x51,0x01],[0x01])];return [message([0x50,0x0C],[0x00]),message([0x51,0x01],[0x00])];}
+const PART2_INIT_PATCH="F0 41 10 00 00 00 3D 12 10 00 21 04 57 49 25 00 F7";
+function activationMessages(part){if(part===2)return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[0x7F]),message([0x51,0x01],[0x01]),message([0x51,0x0D],[0x7F])];return [message([0x50,0x0C],[0x00]),message([0x51,0x01],[0x00])];}
 function defaultResonance(p){if(!p)return false;if(p.category==="Acoustic Piano")return true;if(p.category==="GO:Piano"){const list=PATCHES.filter(x=>x.category==="GO:Piano");return list.findIndex(x=>x.name===p.name)>=0&&list.findIndex(x=>x.name===p.name)<9;}return false;}
 function resonanceAvailable(p){return !!p&&(p.category==="Acoustic Piano"||(p.category==="GO:Piano"&&defaultResonance(p)));}
 let resonancePreference=true;
 function updateResonanceAvailability(){const available=resonanceAvailable(selectedPatch(1));$("resonanceControl").classList.toggle("muted",!available);$("pianoResonance").disabled=!available;if(available){$("pianoResonance").checked=resonancePreference;}else{$("pianoResonance").checked=false;}$("resonanceText").textContent="Piano Resonance: "+($("pianoResonance").checked?"ON":"OFF");return available;}
 function resonanceMessagesForPatch(){if(!updateResonanceAvailability())return [RESONANCE_OFF];return $("pianoResonance").checked?[RESONANCE_ON,RESONANCE_ON_EXTRA]:[RESONANCE_OFF];}
 function sendResonanceForCurrentPatch(){actionMessages("resonance").forEach(scheduleRaw);}
-function modeMessages(){const m=mode(),split=Number(SPLIT_MAP[$("split").value]);if(m==="Layer")return [message([0x50,0x01],[0x01]),message([0x51,0x01],[0x01])];if(m==="Split")return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[split]),message([0x51,0x01],[0x01]),message([0x51,0x0D],[split-1])];if(activePart===2)return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[0x7F]),message([0x51,0x01],[0x01])];return [message([0x50,0x0C],[0x00]),message([0x51,0x01],[0x00]),message([0x51,0x0D],[0x7F])];}
+function modeMessages(){
+ const m=mode(),split=Number(SPLIT_MAP[$("split").value]);
+ if(m==="Layer")return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[0x00]),message([0x51,0x01],[0x01]),message([0x51,0x0D],[0x7F])];
+ if(m==="Split")return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[split]),message([0x51,0x01],[0x01]),message([0x51,0x0D],[split-1])];
+ if(activePart===2)return [message([0x50,0x01],[0x01]),message([0x50,0x0C],[0x7F]),message([0x51,0x01],[0x01]),message([0x51,0x0D],[0x7F])];
+ return [message([0x50,0x0C],[0x00]),message([0x51,0x01],[0x00]),message([0x51,0x0D],[0x7F])];
+}
 function resonanceActionMessages(){if(!resonanceAvailable(selectedPatch(1)))return [message([0x0A,0x00],[0x00])];return $("pianoResonance").checked?[message([0x0A,0x00],[0x4E]),messageFullAddress([0x01,0x00,0x00,0x0C],[0x01])]:[message([0x0A,0x00],[0x00])];}
 function actionMessages(id){const p1=selectedPatch(1),p2=selectedPatch(2);switch(id){case "reverb":return [message([0x06,0x01],[hex(REVERB_MAP[Number($("reverb").value)])])];case "patch1":case "cat1":return p1?[message([0x20,0x04],[p1.msb,p1.lsb,p1.pc-1])]:[];case "patch2":case "cat2":return p2?[message([0x21,0x04],[p2.msb,p2.lsb,p2.pc-1])]:[];case "vol1":return [message([0x20,0x07],[Number($("vol1").value)])];case "vol2":return [message([0x21,0x07],[Number($("vol2").value)])];case "oct1":return [message([0x50,0x00],[OCTAVE_MAP[$("oct1").value]])];case "oct2":return [message([0x51,0x00],[OCTAVE_MAP[$("oct2").value]])];case "split":return mode()==="Split"?[message([0x50,0x0C],[Number(SPLIT_MAP[$("split").value])]),message([0x51,0x0D],[Number(SPLIT_MAP[$("split").value])-1])]:[];case "mode":return modeMessages();case "resonance":return resonanceActionMessages();default:return [];}}
 function generate(){const p1=selectedPatch(1),p2=selectedPatch(2);if(!p1||!p2)return {text:"",count:0};const out=[message([0x06,0x01],[hex(REVERB_MAP[Number($("reverb").value)])]),message([0x20,0x04],[p1.msb,p1.lsb,p1.pc-1]),message([0x20,0x07],[Number($("vol1").value)]),message([0x21,0x04],[p2.msb,p2.lsb,p2.pc-1]),message([0x21,0x07],[Number($("vol2").value)]),message([0x50,0x00],[OCTAVE_MAP[$("oct1").value]]),message([0x51,0x00],[OCTAVE_MAP[$("oct2").value]]),...modeMessages(),...resonanceActionMessages()];return{text:out.join("\n\n"),count:out.length};}
@@ -181,7 +178,6 @@ const READ_REQUESTS=[
  "F0 41 10 00 00 00 3D 11 10 00 21 04 00 00 00 04 00 F7",
  "F0 41 10 00 00 00 3D 11 10 00 50 00 00 00 00 0F 00 F7",
  "F0 41 10 00 00 00 3D 11 10 00 51 00 00 00 00 0F 00 F7",
- "F0 41 10 00 00 00 3D 11 10 00 00 37 00 00 00 01 00 F7",
  "F0 41 10 00 00 00 3D 11 10 00 0A 00 00 00 00 01 00 F7",
  "F0 41 10 00 00 00 3D 11 01 00 00 0C 00 00 00 01 00 F7"
 ];
@@ -189,7 +185,7 @@ let readingPerformanceState=false, homeReadInProgress=false;
 function requestPerformanceState(isHome=false){
  const out=chosenMidiOutput();if(!out)return;
  readingPerformanceState=true;homeReadInProgress=!!isHome;
- try{READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();}
+ try{if(isHome)sendLogged(out,checkedOutgoing(EFFECT_STRUCTURE));READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();}
  catch(err){readingPerformanceState=false;homeReadInProgress=false;$('midiNotice').textContent=`Read state error: ${err.name||'Error'}: ${err.message||String(err)}`;}
 }
 function setPatchFromReply(msb,lsb,pcMinusOne){const p=PATCHES.find(x=>x.msb===msb&&x.lsb===lsb&&x.pc-1===pcMinusOne);if(!p)return false;$("cat1").value=p.category;fillPatchSelect(1,p.name);updateResonanceAvailability();updateOutput();return true;}
@@ -219,8 +215,6 @@ function handleMidiMessage(event){
  else if(addr3===0x10&&a===0x21&&b===0x04&&d.length>=18){if(homeReadInProgress&&d[12]===0x79&&d[13]===0x00&&d[14]===0x00){if(sendRawNow(PART2_INIT_PATCH)){setCat("cat2","GO:Piano");fillPatchSelect(2,"AcousticBass");}}else{const p=PATCHES.find(x=>x.msb===d[12]&&x.lsb===d[13]&&x.pc-1===d[14]);if(p){$('cat2').value=p.category;fillPatchSelect(2,p.name);}} $('vol2').value=String(d[15]);$('vol2Slider').value=String(d[15]);updateOutput();}
  else if(addr3===0x10&&a===0x50&&b===0x00&&d.length>=28){const oct=hex(d[12]),found=Object.entries(OCTAVE_MAP).find(([label,val])=>val===oct);if(found)$('oct1').value=found[0];window._goP1Enabled=d[13]===0x01;window._goSplitRaw=d[24];const sf=Object.entries(SPLIT_MAP).find(([label,val])=>val===d[24]);if(sf)$('split').value=sf[0];updateOutput();}
  else if(addr3===0x10&&a===0x51&&b===0x00&&d.length>=28){const oct=hex(d[12]),found=Object.entries(OCTAVE_MAP).find(([label,val])=>val===oct);if(found)$('oct2').value=found[0];window._goP2Enabled=d[13]===0x01;const splitCandidate=Object.entries(SPLIT_MAP).find(([label,val])=>val-1===d[25]);if(splitCandidate)$('split').value=splitCandidate[0];if(window._goP1Enabled&&window._goP2Enabled){document.querySelector('input[name="mode"][value="'+(window._goSplitRaw?"Split":"Layer")+'"]').checked=true;}else{document.querySelector('input[name="mode"][value="Single Tone"]').checked=true;}updateOutput();}
- else if(addr3===0x10&&a===0x00&&b===0x37&&homeReadInProgress&&d.length>=14){if(d[12]!==0x02)sendRawNow(EFFECT_STRUCTURE);}
- 
  else if(addr3===0x10&&a===0x0A&&b===0x00&&d.length>=14){window._goPianoMfxType=d[12];}
  else if(addr3===0x01&&a===0x00&&b===0x0C&&d.length>=14){const on=d[12]===0x01&&window._goPianoMfxType===0x4E;if(resonanceAvailable(selectedPatch(1))){resonancePreference=on;$('pianoResonance').checked=on;$('resonanceText').textContent='Piano Resonance: '+(on?'ON':'OFF');}}
  if(readingPerformanceState&&addr3===0x01&&a===0x00&&b===0x0C){readingPerformanceState=false;homeReadInProgress=false;$('midiNotice').textContent='Параметры Performance перечитаны из GO:Piano.';}
@@ -286,11 +280,13 @@ function resetToDefaultPreset(){
   message([0x51,0x0D],[0x7F]),             // Part 2 KeyboardRangeUpper = G9
   // Do not write Split Point or split ranges when recalling default.
   message([0x06,0x01],[0x30]),             // Reverb Level 4 (raw 48)
-  message([0x20,0x04],[0x00,0x44,0x00,0x64]), // Part 1 GO Grand, volume 100
+  message([0x20,0x04],[0x00,0x44,0x00]), // Part 1 GO Grand patch only
+  message([0x20,0x07],[0x64]),             // Part 1 Volume = 100
   message([0x50,0x00],[0x40]),             // Part 1 Octave Shift = 0
   RESONANCE_ON,                             // Part 1 Piano Resonance type
   RESONANCE_ON_EXTRA,                       // Part 1 Piano Resonance switch ON
-  message([0x21,0x04],[0x57,0x49,0x25,0x64]), // Part 2 AcousticBass, volume 100
+  message([0x21,0x04],[0x57,0x49,0x25]), // Part 2 AcousticBass patch only
+  message([0x21,0x07],[0x64]),             // Part 2 Volume = 100
   message([0x51,0x00],[0x40])              // Part 2 Octave Shift = 0
  ];
  let i=0;
