@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#101522">
-<title>go:piano helper v27</title>
+<title>go:piano tweaks</title>
 <style>
 :root{color-scheme:dark;--bg:#10141b;--panel:#1b222c;--line:#37414f;--text:#f1f4f8;--muted:#a5afbd;--accent:#8bbcff;--green:#8ce0b6}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.25 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .wrap{width:min(100%,720px);margin:auto;padding:8px}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 8px}.brand{font-size:17px;font-weight:700;letter-spacing:-.02em}.status{font-size:11px;color:var(--muted);text-align:right;max-width:46%;overflow-wrap:anywhere}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}.cardhead{font-size:14px;font-weight:700;margin-bottom:8px}.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.mode{position:relative}.mode input{position:absolute;opacity:0}.mode span{display:block;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 3px;background:#111720;color:var(--muted)}.mode input:checked+span{background:#233a56;border-color:var(--accent);color:#fff}
-.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.field{min-width:0}label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px}select,input[type=number]{width:100%;min-width:0;background:#111720;border:1px solid #465160;border-radius:7px;color:var(--text);padding:7px 6px;min-height:36px;font:inherit;font-size:16px}select{padding-right:2px}.part{border:1px solid var(--line);border-radius:10px;padding:8px;margin-top:8px}.part.active-part{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}.part-select{width:100%;text-align:left;border:0;border-radius:0;background:transparent;color:var(--accent);font:inherit;font-weight:750;padding:0;min-height:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer;-webkit-tap-highlight-color:transparent}.part.active-part .part-select{background:transparent;border-color:transparent}.part-card{cursor:pointer}.part-card select,.part-card input,.part-card label,.part-card button{cursor:auto}.part-select,.patchnav{cursor:pointer}.part-select:disabled{opacity:1}.parthead{display:grid;grid-template-columns:68px minmax(0,1fr);gap:7px;align-items:center;font-weight:700;margin-bottom:7px}.parthead small{font-size:11px;color:var(--muted);font-weight:400}.patchfield{display:grid;grid-template-columns:68px minmax(0,1fr);gap:7px;align-items:center;margin-bottom:7px}.patchfield label{font-size:14px;font-weight:400;color:var(--text);margin:0}.patchfield select{font-size:16px}.patchpicker{display:grid;grid-template-columns:minmax(0,1fr) 27px;gap:4px;align-items:stretch}.patchnavstack{display:grid;grid-template-rows:repeat(2,15px);gap:2px;align-content:center}.patchnav{display:flex;align-items:center;justify-content:center;height:15px;min-height:0;width:27px;min-width:0;padding:0;overflow:hidden;font-size:10px;line-height:1;border-radius:5px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}.resonance{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;font-size:12px;color:var(--text);margin-top:8px;min-height:30px;cursor:pointer}.resonance input{position:absolute;opacity:0;width:1px;height:1px}.resonance .switchtrack{position:relative;display:inline-block;flex:0 0 38px;width:38px;height:22px;border-radius:999px;background:#465160;border:1px solid #5a6573;transition:background .12s; margin:0}.resonance .switchtrack:after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#eef3fa;transition:transform .12s}.resonance input:checked+.switchtrack{background:#4d9c78;border-color:#66bd94}.resonance input:checked+.switchtrack:after{transform:translateX(16px)}.resonance.muted{opacity:.38;filter:grayscale(.5)}.resonance input:disabled+.switchtrack{pointer-events:none}.reverbbox{display:flex;align-items:center;justify-content:space-between;gap:7px}.digital-display{display:flex;align-items:center;justify-content:center;gap:2px;height:24px;min-width:0;transform:skewX(-8deg);flex:1}.digit{position:relative;display:inline-block;flex:0 0 11px;width:11px;height:18px}.seg{position:absolute;background:#465160;opacity:.42;border-radius:1px}.seg.on{background:var(--accent);opacity:1;box-shadow:0 0 2px #8bbcff}.seg.a,.seg.g,.seg.d{width:7px;height:2px;left:2px}.seg.a{top:0}.seg.g{top:8px}.seg.d{bottom:0}.seg.f,.seg.b,.seg.e,.seg.c{width:2px;height:6px}.seg.f{top:1px;left:0}.seg.b{top:1px;right:0}.seg.e{bottom:1px;left:0}.seg.c{bottom:1px;right:0}.digit.plus:after{content:"+";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--accent);font:700 14px/1 ui-monospace,monospace;transform:skewX(8deg)}.digital-display.small{gap:2px}.digital-display.small .digit{flex-basis:11px}.reverbbox .digital-display{flex:1}.octcontrol{display:flex;align-items:center;justify-content:space-between;gap:4px}.octcontrol .stepbtn{display:flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 30px;min-width:30px;width:30px;height:34px;padding:0;font-size:18px;line-height:1;text-align:center}.octcontrol .digital-display{flex:1}.modwheel{display:block;width:100%;height:28px;margin:10px 0 0;accent-color:var(--accent);touch-action:pan-x;cursor:ew-resize}.modwheel::-webkit-slider-thumb{width:22px;height:22px}.modwheel::-moz-range-thumb{width:22px;height:22px;border-radius:50%}.reverbvalue{min-width:34px;text-align:center;font-size:18px;font-weight:750;font-variant-numeric:tabular-nums}.stepbtn{min-width:36px;height:34px;padding:0;font-size:21px;line-height:1;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}.reverbbox .stepbtn{flex:0 0 36px}.reverbbox .reverbvalue{flex:1}.controlrow{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:8px;margin-top:6px}.sliderwrap{display:flex;align-items:center;gap:8px;min-width:0}.slider{width:100%;min-width:0;height:24px;margin:0;accent-color:var(--accent);touch-action:pan-y}.slidernum{width:54px!important;min-height:36px!important;height:36px;text-align:center;padding:4px 2px!important;font-variant-numeric:tabular-nums}.octrow{margin-top:0}.octrow select{display:block;width:100%;margin-left:0;min-height:36px;height:36px}.hidden{display:none!important}.muted{opacity:.38;filter:grayscale(.35)}.muted select,.muted input,.muted button,.muted .knob{pointer-events:none}.compacttop{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.splitfield select{width:100%}.buttons{display:flex;gap:6px;flex-wrap:wrap}.liveoption{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}.liveoption input{accent-color:var(--accent);margin:0}.btn{border:1px solid var(--line);background:#27313f;color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;font-size:12px;font-weight:650}.btn.primary{background:#8bbcff;color:#111a28;border-color:transparent}.btn:disabled{opacity:.45}.midirow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end}.midirow select{font-size:12px}#presetSelect{font-size:14px}#savePresetBtn{min-height:36px;white-space:nowrap}.notice{font-size:11px;color:var(--muted);margin-top:7px;overflow-wrap:anywhere}.output{font:10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:200px;overflow:auto;color:#c5dcff;margin:6px 0 0}.outhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:8px}.outbuttons{display:flex;gap:6px;margin-top:6px}.outbuttons button{flex:1}.diagnostic{font-size:10px;color:var(--muted);margin-top:6px;overflow-wrap:anywhere}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.field{min-width:0}label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px}select,input[type=number]{width:100%;min-width:0;background:#111720;border:1px solid #465160;border-radius:7px;color:var(--text);padding:7px 6px;min-height:36px;font:inherit;font-size:16px}select{padding-right:2px}.part{border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:10px;margin-top:0}.part.active-part{border-color:var(--accent)}.part-select{width:100%;text-align:left;border:1px solid var(--line);border-bottom:0;border-radius:9px 9px 0 0;background:#111720;color:var(--text);font:inherit;font-weight:750;padding:9px 10px;min-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}.part.active-part .part-select{background:var(--panel);border-color:var(--accent);position:relative;z-index:2;margin-bottom:-1px}.part-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:end}.part-tab-label{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.parthead{grid-template-columns:minmax(0,1fr);gap:0}.parthead .patchpicker{margin-bottom:7px}.part-panel-hidden{display:none!important}.part-resonance-space{min-height:38px}.part-card{cursor:pointer}.part-card select,.part-card input,.part-card label,.part-card button{cursor:auto}.part-select,.patchnav{cursor:pointer}.part-select.active-part{background:var(--panel);border-color:var(--accent);border-bottom-color:var(--panel);position:relative;z-index:2;margin-bottom:-1px}.part-select.active-part .part-tab-label{color:var(--muted)}.part-select:disabled{opacity:1}.parthead{display:grid;grid-template-columns:68px minmax(0,1fr);gap:7px;align-items:center;font-weight:700;margin-bottom:7px}.parthead small{font-size:11px;color:var(--muted);font-weight:400}.patchfield{display:grid;grid-template-columns:68px minmax(0,1fr);gap:7px;align-items:center;margin-bottom:7px}.patchfield label{font-size:14px;font-weight:400;color:var(--text);margin:0}.patchfield select{font-size:16px}.patchpicker{display:grid;grid-template-columns:minmax(0,1fr) 27px;gap:4px;align-items:stretch}.patchnavstack{display:grid;grid-template-rows:repeat(2,15px);gap:2px;align-content:center}.patchnav{display:flex;align-items:center;justify-content:center;height:15px;min-height:0;width:27px;min-width:0;padding:0;overflow:hidden;font-size:10px;line-height:1;border-radius:5px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}.resonance{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;font-size:12px;color:var(--text);margin-top:8px;min-height:30px;cursor:pointer}.resonance input{position:absolute;opacity:0;width:1px;height:1px}.resonance .switchtrack{position:relative;display:inline-block;flex:0 0 38px;width:38px;height:22px;border-radius:999px;background:#465160;border:1px solid #5a6573;transition:background .12s; margin:0}.resonance .switchtrack:after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#eef3fa;transition:transform .12s}.resonance input:checked+.switchtrack{background:#4d9c78;border-color:#66bd94}.resonance input:checked+.switchtrack:after{transform:translateX(16px)}.resonance.muted{opacity:.38;filter:grayscale(.5)}.resonance input:disabled+.switchtrack{pointer-events:none}.reverbbox{display:flex;align-items:center;justify-content:space-between;gap:7px}.digital-display{display:flex;align-items:center;justify-content:center;gap:2px;height:24px;min-width:0;transform:skewX(-8deg);flex:1}.digit{position:relative;display:inline-block;flex:0 0 11px;width:11px;height:18px}.seg{position:absolute;background:#465160;opacity:.42;border-radius:1px}.seg.on{background:var(--accent);opacity:1;box-shadow:0 0 2px #8bbcff}.seg.a,.seg.g,.seg.d{width:7px;height:2px;left:2px}.seg.a{top:0}.seg.g{top:8px}.seg.d{bottom:0}.seg.f,.seg.b,.seg.e,.seg.c{width:2px;height:6px}.seg.f{top:1px;left:0}.seg.b{top:1px;right:0}.seg.e{bottom:1px;left:0}.seg.c{bottom:1px;right:0}.digit.plus:after{content:"+";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--accent);font:700 14px/1 ui-monospace,monospace;transform:skewX(8deg)}.digital-display.small{gap:2px}.digital-display.small .digit{flex-basis:11px}.reverbbox .digital-display{flex:1}.octcontrol{display:flex;align-items:center;justify-content:space-between;gap:4px}.octcontrol .stepbtn{display:flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 30px;min-width:30px;width:30px;height:34px;padding:0;font-size:18px;line-height:1;text-align:center}.octcontrol .digital-display{flex:1}.modwheel{display:block;width:100%;height:28px;margin:10px 0 0;accent-color:var(--accent);touch-action:pan-x;cursor:ew-resize}.modwheel::-webkit-slider-thumb{width:22px;height:22px}.modwheel::-moz-range-thumb{width:22px;height:22px;border-radius:50%}.reverbvalue{min-width:34px;text-align:center;font-size:18px;font-weight:750;font-variant-numeric:tabular-nums}.stepbtn{min-width:36px;height:34px;padding:0;font-size:21px;line-height:1;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}.reverbbox .stepbtn{flex:0 0 36px}.reverbbox .reverbvalue{flex:1}.controlrow{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:8px;margin-top:6px}.sliderwrap{display:flex;align-items:center;gap:8px;min-width:0}.slider{width:100%;min-width:0;height:24px;margin:0;accent-color:var(--accent);touch-action:pan-y}.slidernum{width:54px!important;min-height:36px!important;height:36px;text-align:center;padding:4px 2px!important;font-variant-numeric:tabular-nums}.octrow{margin-top:0}.octrow select{display:block;width:100%;margin-left:0;min-height:36px;height:36px}.hidden{display:none!important}.muted{opacity:.38;filter:grayscale(.35)}.muted select,.muted input,.muted button,.muted .knob{pointer-events:none}.compacttop{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.splitfield select{width:100%}.buttons{display:flex;gap:6px;flex-wrap:wrap}.liveoption{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}.liveoption input{accent-color:var(--accent);margin:0}.btn{border:1px solid var(--line);background:#27313f;color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;font-size:12px;font-weight:650}.btn.primary{background:#8bbcff;color:#111a28;border-color:transparent}#savePresetBtn{background:#d76568;color:#fff;border:2px solid #08090b;box-shadow:inset 0 -3px 0 rgba(0,0,0,.22);font-size:15px;padding:7px 14px;min-width:88px}.preset-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}.preset-row select{min-width:0}.presskey-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end}.presskey-btn{min-height:36px;white-space:nowrap}.preset-title{margin-bottom:7px}.btn:disabled{opacity:.45}.midirow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end}.midirow select{font-size:12px}#presetSelect{font-size:14px}#savePresetBtn{min-height:36px;white-space:nowrap}.notice{font-size:11px;color:var(--muted);margin-top:7px;overflow-wrap:anywhere}.output{font:10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:200px;overflow:auto;color:#c5dcff;margin:6px 0 0}.outhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:8px}.outbuttons{display:flex;gap:6px;margin-top:6px}.outbuttons button{flex:1}.diagnostic{font-size:10px;color:var(--muted);margin-top:6px;overflow-wrap:anywhere}
 .txlog{font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;max-height:260px;overflow:auto;background:#0b1017;border:1px solid #303b49;border-radius:7px;padding:8px;margin:6px 0 0;color:#c5dcff;user-select:text;-webkit-user-select:text}.txloghead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:10px}.txlogbuttons{display:flex;gap:6px}.txlogbuttons .btn{padding:5px 8px;font-size:11px}
 .modalback{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72)}.modalbox{width:min(100%,420px);background:#1b222c;border:1px solid #536174;border-radius:14px;padding:16px;box-shadow:0 18px 60px rgba(0,0,0,.5)}.modalbox h2{font-size:17px;margin:0 0 12px}.modalbox label{margin-top:10px}.modalbox input[type=text],.modalbox select{width:100%;min-height:40px;background:#111720;border:1px solid #465160;border-radius:7px;color:var(--text);padding:8px;font:inherit;font-size:16px}.modalerror{font-size:12px;color:#ffb6a8;min-height:16px;margin-top:8px;overflow-wrap:anywhere}.modalbuttons{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modalbuttons .btn{min-width:82px}.modalback[hidden]{display:none!important}
 @media(max-width:360px){.wrap{padding:5px}.card{padding:8px}.grid2{gap:6px}.controlrow{grid-template-columns:minmax(0,1fr) 82px;gap:5px}.slidernum{width:47px!important}.parthead{grid-template-columns:62px minmax(0,1fr);font-size:13px}}
@@ -18,34 +18,49 @@
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand">Roland GO:PIANO (Basic) Tweaks</div><div class="status" id="midiStatus">MIDI не подключён</div></header>
+<header class="top"><div class="brand">Roland GO:Piano Tweaks</div><div class="status" id="midiStatus">Not connected</div></header>
 <main>
 <section class="card">
 <div class="cardhead">MIDI</div>
-<div class="midirow"><div class="field"><label for="midiOutput">MIDI Output</label><select id="midiOutput"><option value="">Not connected</option></select></div><button class="btn" id="connectBtn">Connect</button></div>
-<div class="notice" id="midiNotice">Подключи MIDI и выбери выход.</div>
-<div class="txloghead"><span>Исходящие MIDI-команды (только отправленные)</span><div class="txlogbuttons"><button class="btn" id="copyTxLogBtn" type="button">Копировать</button><button class="btn" id="clearTxLogBtn" type="button">Очистить</button></div></div><pre class="txlog" id="txLog" aria-live="off">Журнал пока пуст. Подключи MIDI или измени параметр.</pre>
+<div class="midirow"><div class="field"><label for="midiOutput">Device</label><select id="midiOutput"><option value="">Not connected</option></select></div><button class="btn" id="connectBtn">Connect</button></div>
+<div class="notice" id="midiNotice">Connect a MIDI device.</div>
+<div class="txloghead"><span>Outgoing MIDI messages</span><div class="txlogbuttons"><button class="btn" id="copyTxLogBtn" type="button">Copy</button><button class="btn" id="clearTxLogBtn" type="button">Clear</button></div></div><pre class="txlog" id="txLog" aria-live="off">No messages yet. Connect a device or change a parameter.</pre>
 <div class="diagnostic hidden" id="diagnostic"></div><span class="hidden" id="messageCount">5 messages</span><pre class="hidden" id="output" aria-live="polite"></pre>
 </section>
 <section class="card">
-<div class="cardhead">Performance Mode</div>
-<div class="modes">
+<div class="cardhead preset-title">Preset</div>
+<div class="preset-row"><select id="presetSelect" aria-label="Preset"><option value="default">default</option></select><button type="button" class="btn" id="savePresetBtn">SAVE</button></div>
+<div class="field" style="margin-top:10px"><label>Mode</label><div class="modes">
 <label class="mode"><input type="radio" name="mode" value="Single Tone" checked><span>Single Tone</span></label>
 <label class="mode"><input type="radio" name="mode" value="Layer"><span>Layer</span></label>
 <label class="mode"><input type="radio" name="mode" value="Split"><span>Split</span></label>
-</div>
-<div class="grid2" style="margin-top:8px;align-items:end">
-  <div class="field"><label for="presetSelect">Preset</label><select id="presetSelect"><option value="default">default</option><option value="0">1. empty</option><option value="1">2. empty</option><option value="2">3. empty</option><option value="3">4. empty</option><option value="4">5. empty</option></select></div>
-  <button type="button" class="btn" id="savePresetBtn">Save</button>
-</div>
-<div class="compacttop"><div class="field splitfield muted" id="splitField"><label for="split">Split Point</label><select id="split"></select></div>
+</div></div>
+<div class="compacttop"><div class="field splitfield muted" id="splitField"><label for="split">Split Point</label><div class="presskey-row"><select id="split"></select><button type="button" class="btn presskey-btn" id="pressKeyBtn">Press Key</button></div></div>
 <div class="field"><label>Reverb Level</label><div class="reverbbox"><button type="button" class="btn stepbtn" id="reverbMinus" aria-label="Decrease Reverb Level">−</button><span class="digital-display" id="reverbValue" aria-label="Reverb Level"></span><button type="button" class="btn stepbtn" id="reverbPlus" aria-label="Increase Reverb Level">+</button><input type="hidden" id="reverb" value="4"></div></div></div><input type="range" class="modwheel" id="modWheel" min="0" max="127" value="0" aria-label="Modulation wheel">
+</section>
+<section class="card" id="partsCard">
+<div class="part-tabs">
+<button type="button" class="part-select active-tab" id="selectPart1" aria-pressed="true">Part 1<span class="part-tab-label" id="part1TabPatch">GO Grand</span></button>
+<button type="button" class="part-select" id="selectPart2" aria-pressed="false">Part 2<span class="part-tab-label" id="part2TabPatch">AcousticBass</span></button>
+</div>
+<div class="part part-card" id="part1Card" style="margin-top:0">
+<div class="parthead"><div class="patchpicker"><select id="patch1" aria-label="Part 1 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch1" aria-label="Previous Part 1 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch1" aria-label="Next Part 1 patch">▼</button></div></div></div>
+<div class="field patchfield"><label for="cat1">Category:</label><select id="cat1" aria-label="Part 1 category"></select></div>
+<label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance Effect: ON</span></label>
+<div class="grid2"><div class="field octrow"><label for="oct1">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct1Minus" aria-label="Decrease Part 1 octave">−</button><span class="digital-display" id="oct1Value" aria-label="Part 1 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct1Plus" aria-label="Increase Part 1 octave">+</button><select id="oct1" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol1">Volume</label><div class="sliderwrap"><input class="slider" id="vol1Slider" type="range" min="0" max="127" value="100" aria-label="Part 1 Volume slider"><input class="slidernum" id="vol1" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
+</div>
+<div class="part part-card part-panel-hidden" id="part2Card">
+<div class="parthead"><div class="patchpicker"><select id="patch2" aria-label="Part 2 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch2" aria-label="Previous Part 2 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch2" aria-label="Next Part 2 patch">▼</button></div></div></div>
+<div class="field patchfield"><label for="cat2">Category:</label><select id="cat2" aria-label="Part 2 category"></select></div>
+<div class="resonance part-resonance-space" aria-hidden="true"></div>
+<div class="grid2"><div class="field octrow"><label for="oct2">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct2Minus" aria-label="Decrease Part 2 octave">−</button><span class="digital-display" id="oct2Value" aria-label="Part 2 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct2Plus" aria-label="Increase Part 2 octave">+</button><select id="oct2" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol2">Volume</label><div class="sliderwrap"><input class="slider" id="vol2Slider" type="range" min="0" max="127" value="100" aria-label="Part 2 Volume slider"><input class="slidernum" id="vol2" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
+</div>
 </section>
 <section class="card">
 <div class="part part-card active-part" id="part1Card" style="margin-top:0">
 <div class="parthead"><button type="button" class="part-select" id="selectPart1" aria-pressed="true">Part 1:</button><div class="patchpicker"><select id="patch1" aria-label="Part 1 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch1" aria-label="Previous Part 1 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch1" aria-label="Next Part 1 patch">▼</button></div></div></div>
 <div class="field patchfield"><label for="cat1">Category:</label><select id="cat1" aria-label="Part 1 category"></select></div>
-<label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance: ON</span></label>
+<label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance Effect: ON</span></label>
 <div class="grid2"><div class="field octrow"><label for="oct1">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct1Minus" aria-label="Decrease Part 1 octave">−</button><span class="digital-display" id="oct1Value" aria-label="Part 1 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct1Plus" aria-label="Increase Part 1 octave">+</button><select id="oct1" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol1">Volume</label><div class="sliderwrap"><input class="slider" id="vol1Slider" type="range" min="0" max="127" value="100" aria-label="Part 1 Volume slider"><input class="slidernum" id="vol1" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
 </div>
 <div class="part part-card" id="part2Card">
@@ -57,13 +72,14 @@
 
 </main>
 </div>
+<div class="modalback" id="pressKeyModal" hidden><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="pressKeyTitle"><h2 id="pressKeyTitle">Set Split Point</h2><p>Press a key on the GO:Piano keyboard.</p><div class="notice" id="pressKeyNotice">Waiting for a MIDI note…</div><div class="modalbuttons"><button type="button" class="btn" id="cancelPressKeyBtn">Cancel</button></div></div></div>
 <div class="modalback" id="saveModal" hidden>
  <div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
   <h2 id="saveModalTitle">Save User Performance</h2>
-  <label for="saveSlot">Слот</label><select id="saveSlot"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option><option value="4">5</option></select>
-  <label for="saveName">Имя пресета (до 12 ASCII-символов)</label><input id="saveName" type="text" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Например, LIVE PIANO">
+  <label for="saveSlot">Preset slot</label><select id="saveSlot"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option><option value="4">5</option><option value="5">6</option><option value="6">7</option><option value="7">8</option><option value="8">9</option><option value="9">10</option><option value="10">11</option><option value="11">12</option><option value="12">13</option><option value="13">14</option><option value="14">15</option><option value="15">16</option><option value="16">17</option><option value="17">18</option><option value="18">19</option><option value="19">20</option><option value="20">21</option><option value="21">22</option><option value="22">23</option><option value="23">24</option><option value="24">25</option><option value="25">26</option><option value="26">27</option><option value="27">28</option><option value="28">29</option><option value="29">30</option><option value="30">31</option><option value="31">32</option></select>
+  <label for="saveName">Preset name (up to 12 ASCII characters)</label><input id="saveName" type="text" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. LIVE PIANO">
   <div class="modalerror" id="saveModalError" aria-live="polite"></div>
-  <div class="modalbuttons"><button type="button" class="btn" id="cancelSaveBtn">Отмена</button><button type="button" class="btn primary" id="confirmSaveBtn">Сохранить</button></div>
+  <div class="modalbuttons"><button type="button" class="btn" id="cancelSaveBtn">Cancel</button><button type="button" class="btn primary" id="confirmSaveBtn">Save</button></div>
  </div>
 </div>
 <script>
@@ -76,7 +92,7 @@ const SAVE_TEMPLATES = ["F0 41 10 00 00 00 3D 12 20 [hex PresetNumber минус
 const $=id=>document.getElementById(id), hex=n=>Number(n).toString(16).toUpperCase().padStart(2,"0");
 const categories=CATEGORY_ORDER.filter(c=>PATCHES.some(p=>p.category===c));
 function fillSelect(el,items,valueFn=x=>x,labelFn=x=>x){el.innerHTML="";items.forEach(item=>{const o=document.createElement("option");o.value=valueFn(item);o.textContent=labelFn(item);el.appendChild(o);});}
-fillSelect($("split"),Object.keys(SPLIT_MAP));$("split").value="C4";const OCTAVE_ORDER=["-3","-2","-1","0","+1","+2","+3"];fillSelect($("oct1"),OCTAVE_ORDER);fillSelect($("oct2"),OCTAVE_ORDER);$("oct1").value="0";$("oct2").value="0";
+fillSelect($("split"),Object.keys(SPLIT_MAP).reverse());$("split").value="C4";const OCTAVE_ORDER=["-3","-2","-1","0","+1","+2","+3"];fillSelect($("oct1"),OCTAVE_ORDER);fillSelect($("oct2"),OCTAVE_ORDER);$("oct1").value="0";$("oct2").value="0";
 function setCat(id,preferred){fillSelect($(id),categories);if(categories.includes(preferred))$(id).value=preferred;}
 setCat("cat1","GO:Piano");setCat("cat2","GO:Piano");
 function fillPatchSelect(part,preferred){const cat=$("cat"+part).value,list=PATCHES.filter(p=>p.category===cat);fillSelect($("patch"+part),list,p=>p.name,p=>p.name);if(preferred&&list.some(p=>p.name===preferred))$("patch"+part).value=preferred;}
@@ -146,7 +162,7 @@ function resetModForPatch(part){modValues[part]=0;if(modTargetPart()===part){syn
 function changeOctave(part,delta){const id="oct"+part,values=["-3","-2","-1","0","+1","+2","+3"];let idx=values.indexOf($(id).value);idx=Math.max(0,Math.min(values.length-1,idx+delta));if(values[idx]===$(id).value)return;$(id).value=values[idx];updateOutput();scheduleRaw("F0 41 10 00 00 00 3D 12 10 00 "+(part===1?"50 00 ":"51 00 ")+OCTAVE_MAP[$(id).value]+" 00 F7");}
 [1,2].forEach(part=>{ $("oct"+part+"Minus").addEventListener("click",()=>changeOctave(part,-1)); $("oct"+part+"Plus").addEventListener("click",()=>changeOctave(part,1)); });
 $("modWheel").addEventListener("input",()=>{const part=modTargetPart(),value=Number($("modWheel").value);modValues[part]=value;sendModValue(part,value);});
-function updateOutput(){const m=mode(),splitInactive=m!=="Split";$("splitField").classList.toggle("muted",splitInactive);$("split").disabled=splitInactive;$("part1Card").classList.toggle("active-part",m==="Single Tone"&&activePart===1);$("part2Card").classList.toggle("active-part",m==="Single Tone"&&activePart===2);$("selectPart1").setAttribute("aria-pressed",String(m==="Single Tone"&&activePart===1));$("selectPart2").setAttribute("aria-pressed",String(m==="Single Tone"&&activePart===2));[1,2].forEach(part=>{const list=PATCHES.filter(p=>p.category===$("cat"+part).value),idx=list.findIndex(p=>p.name===$("patch"+part).value);$("prevPatch"+part).disabled=idx<=0;$("nextPatch"+part).disabled=idx<0||idx>=list.length-1;});const r=generate();$("output").textContent=r.text;$("messageCount").textContent=r.count+" messages";renderDisplays();for(const id of ["vol1","vol2"]){const n=$(id),v=Math.max(Number(n.min),Math.min(Number(n.max),Number(n.value)||0));n.value=v;$(id+"Slider").value=v;}}
+function updateOutput(){const m=mode(),splitInactive=m!=="Split";$("splitField").classList.toggle("muted",splitInactive);$("split").disabled=splitInactive;$("part1Card").classList.toggle("part-panel-hidden",activePart!==1);$("part2Card").classList.toggle("part-panel-hidden",activePart!==2);$("selectPart1").classList.toggle("active-part",activePart===1);$("selectPart2").classList.toggle("active-part",activePart===2);$("selectPart1").setAttribute("aria-pressed",String(activePart===1));$("selectPart2").setAttribute("aria-pressed",String(activePart===2));$("part1TabPatch").textContent=$("patch1").value||"";$("part2TabPatch").textContent=$("patch2").value||"";[1,2].forEach(part=>{const list=PATCHES.filter(p=>p.category===$("cat"+part).value),idx=list.findIndex(p=>p.name===$("patch"+part).value);$("prevPatch"+part).disabled=idx<=0;$("nextPatch"+part).disabled=idx<0||idx>=list.length-1;});const r=generate();$("output").textContent=r.text;$("messageCount").textContent=r.count+" messages";renderDisplays();for(const id of ["vol1","vol2"]){const n=$(id),v=Math.max(Number(n.min),Math.min(Number(n.max),Number(n.value)||0));n.value=v;$(id+"Slider").value=v;}}
 function changed(id){updateOutput();actionMessages(id).forEach(scheduleRaw);}
 function choosePatch(part,delta){const cat=$("cat"+part).value,list=PATCHES.filter(p=>p.category===cat);if(!list.length)return;let i=list.findIndex(p=>p.name===$("patch"+part).value);i=Math.max(0,Math.min(list.length-1,i+delta));$("patch"+part).value=list[i].name;resetModForPatch(part);if(part===1)updateResonanceAvailability();changed("patch"+part);if(part===1)sendResonanceForCurrentPatch();}
 $("cat1").addEventListener("change",()=>{fillPatchSelect(1);resetModForPatch(1);updateResonanceAvailability();changed("cat1");sendResonanceForCurrentPatch();});
@@ -159,17 +175,17 @@ function changeReverb(delta){const v=Math.max(0,Math.min(10,Number($("reverb").v
 function bindRepeatButton(id,delta){const el=$(id);let delay=null,repeat=null,suppressClick=false;const stop=()=>{if(delay!==null)clearTimeout(delay);if(repeat!==null)clearInterval(repeat);delay=null;repeat=null;};el.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;e.preventDefault();suppressClick=true;changeReverb(delta);delay=setTimeout(()=>{repeat=setInterval(()=>changeReverb(delta),110);},420);});["pointerup","pointercancel","pointerleave"].forEach(name=>el.addEventListener(name,stop));el.addEventListener("click",()=>{if(suppressClick){suppressClick=false;return;}changeReverb(delta);});}bindRepeatButton("reverbMinus",-1);bindRepeatButton("reverbPlus",1);
 $("pianoResonance").addEventListener("change",()=>{if(resonanceAvailable(selectedPatch(1))){resonancePreference=$("pianoResonance").checked;}updateResonanceAvailability();actionMessages("resonance").forEach(scheduleRaw);});
 [1,2].forEach(part=>{["prev","next"].forEach(dir=>$(dir+"Patch"+part).addEventListener("click",()=>choosePatch(part,dir==="prev"?-1:1)));});
-function selectActivePart(part){if(mode()!=="Single Tone"||activePart===part)return;activePart=part;updateOutput();syncModWheel();const out=chosenMidiOutput();if(out){const list=activationMessages(part);try{list.forEach(s=>sendLogged(out, checkedOutgoing(s)));$("midiNotice").textContent=`Активен Part ${part}.`;scheduleStateRead();}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;}}}
+function selectActivePart(part){if(activePart===part)return;activePart=part;updateOutput();syncModWheel();if(mode()!=="Single Tone")return;const out=chosenMidiOutput();if(out){const list=activationMessages(part);try{list.forEach(s=>sendLogged(out, checkedOutgoing(s)));$("midiNotice").textContent=`Part ${part} selected.`;scheduleStateRead();}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;}}}
 $("selectPart1").addEventListener("click",()=>selectActivePart(1));$("selectPart2").addEventListener("click",()=>selectActivePart(2));
 [ ["part1Card",1], ["part2Card",2] ].forEach(([id,part])=>$(id).addEventListener("click",e=>{if(mode()!=="Single Tone")return;if(e.target.closest("select, input, button, label, a"))return;selectActivePart(part);}));
-document.querySelectorAll('input[name="mode"]').forEach(el=>el.addEventListener("change",()=>{if(mode()==="Single Tone")activePart=1;updateOutput();actionMessages("mode").forEach(scheduleRaw);syncModWheel();}));
-let midiAccess=null,currentMidiInput=null,initAlreadySent=false;
+document.querySelectorAll('input[name="mode"]').forEach(el=>el.addEventListener("change",()=>{updateOutput();actionMessages("mode").forEach(scheduleRaw);syncModWheel();}));
+let midiAccess=null,currentMidiInput=null,initAlreadySent=false,identityPending=false,identityAccepted=false,identityTimer=null,pressKeyListening=false;
 function diag(){const secure=window.isSecureContext?"secure context":"NOT secure context";$("diagnostic").textContent=`${secure} · ${navigator.requestMIDIAccess?"Web MIDI API present":"Web MIDI API absent"}`;}
 function allInputs(){const arr=[];if(midiAccess&&midiAccess.inputs&&typeof midiAccess.inputs.forEach==="function")midiAccess.inputs.forEach(i=>arr.push(i));return arr;}
 function selectMidiInput(){const inputs=allInputs(),out=chosenMidiOutput();if(currentMidiInput)currentMidiInput.onmidimessage=null;currentMidiInput=null;if(!inputs.length)return;let chosen=null;if(out){chosen=inputs.find(i=>(i.name||"").toLowerCase()===(out.name||"").toLowerCase());if(!chosen&&/bluetooth/i.test(out.name||""))chosen=inputs.find(i=>/bluetooth/i.test(i.name||""));}if(!chosen)chosen=inputs.find(i=>/bluetooth/i.test(i.name||""))||inputs[0];currentMidiInput=chosen;currentMidiInput.onmidimessage=handleMidiMessage;}
-function refreshMidiOutputs(){if(!midiAccess)return;const sel=$("midiOutput"),prev=sel.value,oldOut=prev?midiAccess.outputs.get(prev):null,prevName=oldOut&&oldOut.name||"";const outputs=[];if(midiAccess.outputs&&typeof midiAccess.outputs.forEach==="function")midiAccess.outputs.forEach(out=>outputs.push(out));sel.innerHTML="";if(!outputs.length){const o=document.createElement("option");o.value="";o.textContent="No MIDI outputs found";sel.appendChild(o);$("midiStatus").textContent="Нет MIDI-выходов";diag();return;}outputs.forEach(out=>{const o=document.createElement("option");o.value=out.id;o.textContent=out.name||("MIDI · "+out.id);sel.appendChild(o);});if(outputs.some(o=>o.id===prev)&&!(/session\s*1/i.test(prevName)&&outputs.some(o=>/bluetooth/i.test(o.name||""))))sel.value=prev;else{const likely=outputs.find(o=>/bluetooth/i.test(o.name||""))||outputs.find(o=>/go.?piano|roland|midi/i.test(o.name||""))||outputs[0];sel.value=likely.id;}updateMidiUi();selectMidiInput();diag();}
+function refreshMidiOutputs(){if(!midiAccess)return;const sel=$("midiOutput"),prev=sel.value,oldOut=prev?midiAccess.outputs.get(prev):null,prevName=oldOut&&oldOut.name||"";const outputs=[];if(midiAccess.outputs&&typeof midiAccess.outputs.forEach==="function")midiAccess.outputs.forEach(out=>outputs.push(out));sel.innerHTML="";if(!outputs.length){const o=document.createElement("option");o.value="";o.textContent="No MIDI outputs found";sel.appendChild(o);$("midiStatus").textContent="No MIDI outputs found";diag();return;}outputs.forEach(out=>{const o=document.createElement("option");o.value=out.id;o.textContent=out.name||("MIDI · "+out.id);sel.appendChild(o);});if(outputs.some(o=>o.id===prev)&&!(/session\s*1/i.test(prevName)&&outputs.some(o=>/bluetooth/i.test(o.name||""))))sel.value=prev;else{const likely=outputs.find(o=>/bluetooth/i.test(o.name||""))||outputs.find(o=>/go.?piano|roland|midi/i.test(o.name||""))||outputs[0];sel.value=likely.id;}updateMidiUi();selectMidiInput();diag();}
 function chosenMidiOutput(){return midiAccess&&midiAccess.outputs?midiAccess.outputs.get($("midiOutput").value)||null:null;}
-function updateMidiUi(){const out=chosenMidiOutput();$("midiStatus").textContent=out?(out.name||"MIDI connected"):(midiAccess?"MIDI connected":"MIDI не подключён");diag();}
+function updateMidiUi(){const out=chosenMidiOutput();$("midiStatus").textContent=out?(out.name||"MIDI connected"):(midiAccess?"MIDI connected":"Not connected");diag();}
 function sendRawNow(str){const out=chosenMidiOutput();if(!out)return false;try{sendLogged(out, checkedOutgoing(str));return true;}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;return false;}}
 function rq(address,count){return parseHex("F0 41 10 00 00 00 3D 11 "+address.map(hex).join(" ")+" 00 00 "+hex(count)+" 00 F7");}
 const READ_REQUESTS=[
@@ -191,10 +207,13 @@ function requestPerformanceState(isHome=false){
 function setPatchFromReply(msb,lsb,pcMinusOne){const p=PATCHES.find(x=>x.msb===msb&&x.lsb===lsb&&x.pc-1===pcMinusOne);if(!p)return false;$("cat1").value=p.category;fillPatchSelect(1,p.name);updateResonanceAvailability();updateOutput();return true;}
 function handleMidiMessage(event){
  const d=event&&event.data;if(!d||!d.length)return;
+ if(pressKeyListening && (d[0]&0xF0)===0x90 && d.length>=3 && d[2]>0){const note=d[1];const match=Object.entries(SPLIT_MAP).find(([name,val])=>val===note);if(match){$("split").value=match[0];updateOutput();if(mode()==="Split")actionMessages("split").forEach(scheduleRaw);closePressKeyModal();return;}}
+ if(identityPending && d[0]===0xF0 && d.length>=14 && d[1]===0x7E && d[3]===0x06 && d[4]===0x02){identityPending=false;clearTimeout(identityTimer);const supported=d[5]===0x41&&d[6]===0x3D;if(supported){identityAccepted=true;initializeDevice();$("midiNotice").textContent="Roland GO:Piano detected. Connected.";}else{identityAccepted=false;$("midiNotice").textContent="This device is not supported. Please connect a Roland GO:Piano.";$("midiStatus").textContent="Unsupported device";}return;}
+
  // HOME normally starts with CC 0 / value 0x55 on channel 16.
  // Accept a message with extra bytes too, in case a MIDI bridge groups data.
  if((d[0]&0xF0)===0xB0&&d.length>=3&&d[1]===0x00&&d[2]===0x55){
-  $('midiNotice').textContent='HOME распознана — перечитываю параметры GO:Piano…';
+  $('presetSelect').value='default';$('midiNotice').textContent='HOME detected — reading GO:Piano state…';
   setTimeout(()=>requestPerformanceState(true),300);return;
  }
  if(d[0]!==0xF0||d.length<13||d[1]!==0x41||d[6]!==0x3D||d[7]!==0x12)return;
@@ -205,7 +224,7 @@ function handleMidiMessage(event){
   return;
  }
  // User Performance name: address 20 slot 00 00, twelve ASCII bytes.
- if(d[8]===0x20&&d[9]<=4&&d[10]===0x00&&d[11]===0x00&&d.length>=26){
+ if(d[8]===0x20&&d[9]<=31&&d[10]===0x00&&d[11]===0x00&&d.length>=26){
   const slot=d[9],bytes=Array.from(d.slice(12,24));presetNames[slot]=String.fromCharCode(...bytes).replace(/\0/g,"").trimEnd();pendingPresetNameReads.delete(slot);updatePresetOptions();
   if(pendingPresetNameReads.size===0)$('midiNotice').textContent="Имена пяти User Performances прочитаны.";return;
  }
@@ -216,12 +235,12 @@ function handleMidiMessage(event){
  else if(addr3===0x10&&a===0x50&&b===0x00&&d.length>=28){const oct=hex(d[12]),found=Object.entries(OCTAVE_MAP).find(([label,val])=>val===oct);if(found)$('oct1').value=found[0];window._goP1Enabled=d[13]===0x01;window._goP1RangeLower=d[24];const sf=Object.entries(SPLIT_MAP).find(([label,val])=>val===d[24]);if(sf)$('split').value=sf[0];updateOutput();}
  else if(addr3===0x10&&a===0x51&&b===0x00&&d.length>=28){const oct=hex(d[12]),found=Object.entries(OCTAVE_MAP).find(([label,val])=>val===oct);if(found)$('oct2').value=found[0];window._goP2Enabled=d[13]===0x01;const splitCandidate=Object.entries(SPLIT_MAP).find(([label,val])=>val-1===d[25]);if(splitCandidate)$('split').value=splitCandidate[0];if(window._goP1Enabled&&window._goP2Enabled){const p1Lower=Number(window._goP1RangeLower);const p2Upper=Number(d[25]);if(p1Lower===0x7F&&p2Upper===0x7F){activePart=2;document.querySelector('input[name="mode"][value="Single Tone"]').checked=true;}else{const isSplit=p1Lower>0&&p1Lower<0x7F&&p2Upper===p1Lower-1;document.querySelector('input[name="mode"][value="'+(isSplit?"Split":"Layer")+'"]').checked=true;}}else{activePart=1;document.querySelector('input[name="mode"][value="Single Tone"]').checked=true;}updateOutput();}
  else if(addr3===0x10&&a===0x0A&&b===0x00&&d.length>=14){window._goPianoMfxType=d[12];}
- else if(addr3===0x01&&a===0x00&&b===0x0C&&d.length>=14){const on=d[12]===0x01&&window._goPianoMfxType===0x4E;if(resonanceAvailable(selectedPatch(1))){resonancePreference=on;$('pianoResonance').checked=on;$('resonanceText').textContent='Piano Resonance: '+(on?'ON':'OFF');}}
- if(readingPerformanceState&&addr3===0x01&&a===0x00&&b===0x0C){readingPerformanceState=false;homeReadInProgress=false;$('midiNotice').textContent='Параметры Performance перечитаны из GO:Piano.';}
+ else if(addr3===0x01&&a===0x00&&b===0x0C&&d.length>=14){const on=d[12]===0x01&&window._goPianoMfxType===0x4E;if(resonanceAvailable(selectedPatch(1))){resonancePreference=on;$('pianoResonance').checked=on;$('resonanceText').textContent='Piano Resonance Effect: '+(on?'ON':'OFF');}}
+ if(readingPerformanceState&&addr3===0x01&&a===0x00&&b===0x0C){readingPerformanceState=false;homeReadInProgress=false;$('midiNotice').textContent='Performance state read from GO:Piano.';}
 }
 
 let performanceControlChannel=15;
-const presetNames=Array(5).fill("INIT PERFORM");
+const presetNames=Array(32).fill("INIT PERFORM");
 let pendingPresetNameReads=new Set();
 function updatePresetOptions(){
  const sel=$("presetSelect"),prev=sel.value;
@@ -232,9 +251,9 @@ function updatePresetOptions(){
 }
 function requestPresetNames(){
  const out=chosenMidiOutput();if(!out)return;
- pendingPresetNameReads=new Set([0,1,2,3,4]);
+ pendingPresetNameReads=new Set(Array.from({length:32},(_,i)=>i));
  try{
-  for(let i=0;i<5;i++)sendLogged(out, parseHex("F0 41 10 00 00 00 3D 11 20 "+hex(i)+" 00 00 00 00 00 0C 00 F7"));
+  for(let i=0;i<32;i++)sendLogged(out, parseHex("F0 41 10 00 00 00 3D 11 20 "+hex(i)+" 00 00 00 00 00 0C 00 F7"));
  }catch(err){$("midiNotice").textContent=`Preset-name read error: ${err.message||String(err)}`;}
 }
 let performanceControlChannelRequested=false;
@@ -245,7 +264,7 @@ function requestPerformanceControlChannel(){
 }
 function selectUserPerformance(slot){
  const out=chosenMidiOutput();if(!out)return;
- if(performanceControlChannel===16){$("midiNotice").textContent="Performance Control Channel установлен в OFF — вызов User Performance невозможен.";return;}
+ if(performanceControlChannel===16){$("midiNotice").textContent="Performance Control Channel is OFF; User Performance recall is unavailable.";return;}
  const ch=performanceControlChannel&15;
  try{
   sendLogged(out, [0xB0|ch,0x00,0x55]);
@@ -254,7 +273,7 @@ function selectUserPerformance(slot){
   modValues[1]=0;modValues[2]=0;syncModWheel();
   // Reset CC1 on MIDI channels 1 and 2 after the Performance has had time to load.
   setTimeout(()=>{sendModValue(1,0);sendModValue(2,0);},100);
-  $("midiNotice").textContent=`Вызван User Performance ${String(slot+1).padStart(3,"0")}; считываю его параметры…`;
+  $("midiNotice").textContent=`User Performance ${String(slot+1).padStart(3,"0")} recalled; reading its state…`;
   // Give the instrument time to switch Performance before querying its state.
   setTimeout(()=>requestPerformanceState(false),350);
  }catch(err){$("midiNotice").textContent=`Preset recall error: ${err.name||"Error"}: ${err.message||String(err)}`;}
@@ -272,7 +291,7 @@ function resetToDefaultPreset(){
  $("reverb").value="4";$("split").value="C4";
  resonancePreference=true;updateResonanceAvailability();
  modValues[1]=0;modValues[2]=0;syncModWheel();updateOutput();
- if(!out){$("midiNotice").textContent="Интерфейс сброшен к default. Подключи MIDI, чтобы применить значения к GO:Piano.";return;}
+ if(!out){$("midiNotice").textContent="Default selected in the interface. Connect MIDI to apply values to GO:Piano.";return;}
  // Use the exact DT1 sequence supplied by the user. Do not append extra bytes
  // to the octave writes: each command below writes only the stated parameter.
  const messages=[
@@ -295,22 +314,22 @@ function resetToDefaultPreset(){
   if(i>=messages.length){
    modValues[1]=0;modValues[2]=0;syncModWheel();
    sendModValue(1,0);sendModValue(2,0);
-   $("midiNotice").textContent="Команды default отправлены; перечитываю параметры GO:Piano…";
+   $("midiNotice").textContent="Default commands sent; reading GO:Piano state…";
    setTimeout(()=>requestPerformanceState(false),350);
    return;
   }
   try{sendLogged(out, checkedOutgoing(messages[i++]));setTimeout(sendNext,35);}
   catch(err){$("midiNotice").textContent=`Default reset error: ${err.name||"Error"}: ${err.message||String(err)}`;}
  };
- $("midiNotice").textContent="Восстанавливаю default: отправляю команды по очереди…";
+ $("midiNotice").textContent="Restoring default: sending commands…";
  sendNext();
 }
 
 function buildSaveMessages(slot,name){
  const p1=selectedPatch(1),p2=selectedPatch(2);
- if(!p1||!p2)throw new Error("Не удалось определить патч Part 1 или Part 2.");
+ if(!p1||!p2)throw new Error("Could not identify the Part 1 or Part 2 patch.");
  const ascii=Array.from(name).map(ch=>ch.charCodeAt(0));
- if(ascii.some(n=>n<32||n>126))throw new Error("Имя должно содержать только печатные ASCII-символы.");
+ if(ascii.some(n=>n<32||n>126))throw new Error("Preset name must contain printable ASCII characters only.");
  const nameBytes=ascii.slice(0,12);while(nameBytes.length<12)nameBytes.push(0x20);
  const m=mode(),split= m==="Split" ? SPLIT_MAP[$("split").value] : 0;
  const part1Range=m==="Split"?hex(split):"00";
@@ -342,10 +361,10 @@ function buildSaveMessages(slot,name){
  });
 }
 function openSaveDialog(){
- const out=chosenMidiOutput();if(!out){$("midiNotice").textContent="Сначала подключи MIDI.";return;}
+ const out=chosenMidiOutput();if(!out){$("midiNotice").textContent="Connect a MIDI device first.";return;}
  const current=$("presetSelect").value;
  const slot=current==="default"?0:Number(current);
- $("saveSlot").value=String(Number.isInteger(slot)&&slot>=0&&slot<5?slot:0);
+ $("saveSlot").value=String(Number.isInteger(slot)&&slot>=0&&slot<32?slot:0);
  updateSaveNameForSlot();$("saveModalError").textContent="";$("saveModal").hidden=false;
  setTimeout(()=>{$("saveName").focus();},0);
 }
@@ -356,34 +375,40 @@ function updateSaveNameForSlot(){
 }
 function closeSaveDialog(){$("saveModal").hidden=true;}
 function saveUserPerformance(){
- const out=chosenMidiOutput();if(!out){$("saveModalError").textContent="Сначала подключи MIDI.";return;}
+ const out=chosenMidiOutput();if(!out){$("saveModalError").textContent="Connect a MIDI device first.";return;}
  const slot=Number($("saveSlot").value),name=$("saveName").value;
- if(!Number.isInteger(slot)||slot<0||slot>4){$("saveModalError").textContent="Выбери слот от 1 до 5.";return;}
- if(!name.trim()){$("saveModalError").textContent="Имя пресета не может быть пустым.";return;}
- if(Array.from(name).length>12){$("saveModalError").textContent="Максимальная длина имени — 12 символов.";return;}
- if(Array.from(name).some(ch=>ch.charCodeAt(0)<32||ch.charCodeAt(0)>126)){$("saveModalError").textContent="Используй печатные ASCII-символы: латиницу, цифры, знаки и пробел.";return;}
+ if(!Number.isInteger(slot)||slot<0||slot>31){$("saveModalError").textContent="Choose a slot from 1 to 32.";return;}
+ if(!name.trim()){$("saveModalError").textContent="Preset name cannot be empty.";return;}
+ if(Array.from(name).length>12){$("saveModalError").textContent="Preset name must be 12 characters or fewer.";return;}
+ if(Array.from(name).some(ch=>ch.charCodeAt(0)<32||ch.charCodeAt(0)>126)){$("saveModalError").textContent="Use printable ASCII characters only.";return;}
  const currentName=(presetNames[slot]||"").trim();
  if(currentName && currentName!=="INIT PERFORM" && !$("saveModal").dataset.overwrite){
   $("saveModal").dataset.overwrite="1";
-  $("saveModalError").textContent=`Слот ${slot+1} уже содержит «${currentName}». Нажми «Сохранить» ещё раз для подтверждения перезаписи.`;
-  $("confirmSaveBtn").textContent="Перезаписать";return;
+  $("saveModalError").textContent=`Slot ${slot+1} already contains “${currentName}”. Press Save again to confirm overwrite.`;
+  $("confirmSaveBtn").textContent="Overwrite";return;
  }
  try{
   const messages=buildSaveMessages(slot,name);
   messages.forEach(bytes=>sendLogged(out, bytes));
   presetNames[slot]=name.padEnd(12," ").slice(0,12);
   updatePresetOptions();$("presetSelect").value=String(slot);
-  $("midiNotice").textContent=`Отправлено ${messages.length} SysEx-сообщений для сохранения пресета ${slot+1}. Проверяю имя в инструменте…`;
-  closeSaveDialog();delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Сохранить";
+  $("midiNotice").textContent=`Sent ${messages.length} SysEx messages to save preset ${slot+1}. Verifying its name…`;
+  closeSaveDialog();delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Save";
   requestPresetNames();
  }catch(err){$("saveModalError").textContent=`Save error: ${err.name||"Error"}: ${err.message||String(err)}`;}
 }
-$("saveSlot").addEventListener("change",()=>{delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Сохранить";updateSaveNameForSlot();});
-$("saveName").addEventListener("input",()=>{delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Сохранить";$("saveModalError").textContent="";});
-$("cancelSaveBtn").addEventListener("click",()=>{closeSaveDialog();delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Сохранить";});
+$("saveSlot").addEventListener("change",()=>{delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Save";updateSaveNameForSlot();});
+$("saveName").addEventListener("input",()=>{delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Save";$("saveModalError").textContent="";});
+$("cancelSaveBtn").addEventListener("click",()=>{closeSaveDialog();delete $("saveModal").dataset.overwrite;$("confirmSaveBtn").textContent="Save";});
 $("confirmSaveBtn").addEventListener("click",saveUserPerformance);
 $("saveModal").addEventListener("click",e=>{if(e.target===$("saveModal"))closeSaveDialog();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("saveModal").hidden)closeSaveDialog();if(e.key==="Enter"&&!$("saveModal").hidden)saveUserPerformance();});
+
+function closePressKeyModal(){pressKeyListening=false;$("pressKeyModal").hidden=true;}
+$("pressKeyBtn").addEventListener("click",()=>{if(!currentMidiInput){$("midiNotice").textContent="Connect a MIDI input to use Press Key.";return;}pressKeyListening=true;$("pressKeyModal").hidden=false;$("pressKeyNotice").textContent="Waiting for a MIDI note…";});
+$("cancelPressKeyBtn").addEventListener("click",closePressKeyModal);
+$("pressKeyModal").addEventListener("click",e=>{if(e.target===$("pressKeyModal"))closePressKeyModal();});
+
 $("presetSelect").addEventListener("change",()=>{
  const value=$("presetSelect").value;
  if(value==="default"){resetToDefaultPreset();return;}
@@ -391,9 +416,10 @@ $("presetSelect").addEventListener("change",()=>{
 });
 $("savePresetBtn").addEventListener("click",openSaveDialog);
 
-function initializeDevice(){const out=chosenMidiOutput();if(!out)return;performanceControlChannelRequested=false;setCat("cat2","GO:Piano");fillPatchSelect(2,"AcousticBass");$("vol2").value="100";$("vol2Slider").value="100";updateOutput();updateResonanceAvailability();try{sendLogged(out, checkedOutgoing(EFFECT_STRUCTURE));sendLogged(out, checkedOutgoing(PART2_INIT_PATCH));resonanceMessagesForPatch().forEach(s=>sendLogged(out, checkedOutgoing(s)));READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();requestPresetNames();initAlreadySent=true;$("midiNotice").textContent=currentMidiInput?"Подключено. Инициализация отправлена; считываю параметры устройства…":"Подключено. Инициализация отправлена, но MIDI-вход не найден — чтение параметров может быть недоступно.";}catch(err){$("midiNotice").textContent=`Init error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
-$("connectBtn").addEventListener("click",async()=>{diag();if(!navigator.requestMIDIAccess){$("midiNotice").textContent="Web MIDI API недоступен в этом браузере. На iOS это может зависеть от конкретного браузера.";return;}$("connectBtn").disabled=true;$("connectBtn").textContent="…";try{midiAccess=await navigator.requestMIDIAccess({sysex:true});midiAccess.onstatechange=()=>{refreshMidiOutputs();};refreshMidiOutputs();selectMidiInput();if(chosenMidiOutput())initializeDevice();$("midiNotice").textContent="Подключение выполнено.";}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;$("diagnostic").textContent=`${window.isSecureContext?"secure":"NOT secure"} · ${err.name||"Error"}`;}finally{$("connectBtn").disabled=false;$("connectBtn").textContent="Connect";}});
-$("midiOutput").addEventListener("change",()=>{updateMidiUi();selectMidiInput();if(chosenMidiOutput())initializeDevice();});
+function requestIdentity(){const out=chosenMidiOutput();if(!out)return;identityAccepted=false;identityPending=true;selectMidiInput();if(!currentMidiInput){identityPending=false;$("midiNotice").textContent="No MIDI input found. Device identity cannot be checked.";return;}try{sendLogged(out,parseHex("F0 7E 7F 06 01 F7"));$("midiNotice").textContent="Checking device identity…";clearTimeout(identityTimer);identityTimer=setTimeout(()=>{if(identityPending){identityPending=false;$("midiNotice").textContent="No valid Identity Reply received. Check the MIDI connection and try again.";}},1800);}catch(err){identityPending=false;$("midiNotice").textContent=`Identity Request error: ${err.message||String(err)}`;}}
+function initializeDevice(){const out=chosenMidiOutput();if(!out)return;performanceControlChannelRequested=false;setCat("cat2","GO:Piano");fillPatchSelect(2,"AcousticBass");$("vol2").value="100";$("vol2Slider").value="100";updateOutput();updateResonanceAvailability();try{sendLogged(out, checkedOutgoing(EFFECT_STRUCTURE));sendLogged(out, checkedOutgoing(PART2_INIT_PATCH));resonanceMessagesForPatch().forEach(s=>sendLogged(out, checkedOutgoing(s)));READ_REQUESTS.forEach(s=>sendLogged(out, parseHex(s)));requestPerformanceControlChannel();requestPresetNames();initAlreadySent=true;$("midiNotice").textContent=currentMidiInput?"Connected. Initialization sent; reading device state…":"Connected. Initialization sent, but no MIDI input was found; reading may be unavailable.";}catch(err){$("midiNotice").textContent=`Init error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
+$("connectBtn").addEventListener("click",async()=>{diag();if(!navigator.requestMIDIAccess){$("midiNotice").textContent="Web MIDI API is unavailable in this browser. On iOS, support depends on the browser.";return;}$("connectBtn").disabled=true;$("connectBtn").textContent="…";try{midiAccess=await navigator.requestMIDIAccess({sysex:true});midiAccess.onstatechange=()=>{refreshMidiOutputs();};refreshMidiOutputs();selectMidiInput();if(chosenMidiOutput())requestIdentity();$("midiNotice").textContent="Checking device identity…";}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;$("diagnostic").textContent=`${window.isSecureContext?"secure":"NOT secure"} · ${err.name||"Error"}`;}finally{$("connectBtn").disabled=false;$("connectBtn").textContent="Connect";}});
+$("midiOutput").addEventListener("change",()=>{updateMidiUi();selectMidiInput();if(chosenMidiOutput())requestIdentity();});
 resonancePreference=defaultResonance(selectedPatch(1));updateResonanceAvailability();updatePresetOptions();diag();updateOutput();syncModWheel();
 </script>
 </body>
