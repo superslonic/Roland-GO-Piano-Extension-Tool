@@ -14,6 +14,18 @@
 .txlog{font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;max-height:260px;overflow:auto;background:#0b1017;border:1px solid #303b49;border-radius:7px;padding:8px;margin:6px 0 0;color:#c5dcff;user-select:text;-webkit-user-select:text}.txloghead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:10px}.txlogbuttons{display:flex;gap:6px}.txlogbuttons .btn{padding:5px 8px;font-size:11px}
 .modalback{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72)}.modalbox{width:min(100%,420px);background:#1b222c;border:1px solid #536174;border-radius:14px;padding:16px;box-shadow:0 18px 60px rgba(0,0,0,.5)}.modalbox h2{font-size:17px;margin:0 0 12px}.modalbox label{margin-top:10px}.modalbox input[type=text],.modalbox select{width:100%;min-height:40px;background:#111720;border:1px solid #465160;border-radius:7px;color:var(--text);padding:8px;font:inherit;font-size:16px}.modalerror{font-size:12px;color:#ffb6a8;min-height:16px;margin-top:8px;overflow-wrap:anywhere}.modalbuttons{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modalbuttons .btn{min-width:82px}.modalback[hidden]{display:none!important}
 @media(max-width:360px){.wrap{padding:5px}.card{padding:8px}.grid2{gap:6px}.controlrow{grid-template-columns:minmax(0,1fr) 82px;gap:5px}.slidernum{width:47px!important}.parthead{grid-template-columns:62px minmax(0,1fr);font-size:13px}}
+
+/* v29 layout corrections */
+.part-tabs{gap:0;align-items:stretch}
+.part-select{border:1px solid var(--line);border-radius:9px 9px 0 0;min-width:0}
+.part-select+ .part-select{margin-left:-1px}
+.part-select.active-part{border:1px solid var(--accent);border-bottom-color:var(--panel);background:var(--panel);border-radius:9px 9px 0 0;margin-bottom:-1px;z-index:2}
+#partsCard>.part{border-top-left-radius:0;border-top-right-radius:10px}
+.patchfield{grid-template-columns:68px minmax(0,1fr)}
+.patchfield .patchpicker{min-width:0;width:100%;grid-template-columns:minmax(0,1fr) 27px}
+.patchfield select{width:100%;min-width:0}
+.octcontrol .stepbtn{flex:0 0 36px;min-width:36px;width:36px;height:34px;font-size:21px;border-radius:8px}
+
 </style>
 </head>
 <body>
@@ -44,32 +56,18 @@
 <button type="button" class="part-select" id="selectPart2" aria-pressed="false">Part 2<span class="part-tab-label" id="part2TabPatch">AcousticBass</span></button>
 </div>
 <div class="part part-card" id="part1Card" style="margin-top:0">
-<div class="parthead"><div class="patchpicker"><select id="patch1" aria-label="Part 1 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch1" aria-label="Previous Part 1 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch1" aria-label="Next Part 1 patch">▼</button></div></div></div>
+<div class="field patchfield"><label for="patch1">Patch:</label><div class="patchpicker"><select id="patch1" aria-label="Part 1 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch1" aria-label="Previous Part 1 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch1" aria-label="Next Part 1 patch">▼</button></div></div></div>
 <div class="field patchfield"><label for="cat1">Category:</label><select id="cat1" aria-label="Part 1 category"></select></div>
-<label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance Effect: ON</span></label>
-<div class="grid2"><div class="field octrow"><label for="oct1">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct1Minus" aria-label="Decrease Part 1 octave">−</button><span class="digital-display" id="oct1Value" aria-label="Part 1 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct1Plus" aria-label="Increase Part 1 octave">+</button><select id="oct1" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol1">Volume</label><div class="sliderwrap"><input class="slider" id="vol1Slider" type="range" min="0" max="127" value="100" aria-label="Part 1 Volume slider"><input class="slidernum" id="vol1" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
+<div class="grid2"><div class="field octrow"><label for="oct1">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct1Minus" aria-label="Decrease Part 1 octave">−</button><span class="digital-display" id="oct1Value" aria-label="Part 1 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct1Plus" aria-label="Increase Part 1 octave">+</button><select id="oct1" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol1">Volume</label><div class="sliderwrap"><input class="slider" id="vol1Slider" type="range" min="0" max="127" value="100" aria-label="Part 1 Volume slider"><input class="slidernum" id="vol1" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div><label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance Effect: ON</span></label>
+
 </div>
 <div class="part part-card part-panel-hidden" id="part2Card">
-<div class="parthead"><div class="patchpicker"><select id="patch2" aria-label="Part 2 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch2" aria-label="Previous Part 2 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch2" aria-label="Next Part 2 patch">▼</button></div></div></div>
+<div class="field patchfield"><label for="patch2">Patch:</label><div class="patchpicker"><select id="patch2" aria-label="Part 2 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch2" aria-label="Previous Part 2 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch2" aria-label="Next Part 2 patch">▼</button></div></div></div>
 <div class="field patchfield"><label for="cat2">Category:</label><select id="cat2" aria-label="Part 2 category"></select></div>
 <div class="resonance part-resonance-space" aria-hidden="true"></div>
 <div class="grid2"><div class="field octrow"><label for="oct2">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct2Minus" aria-label="Decrease Part 2 octave">−</button><span class="digital-display" id="oct2Value" aria-label="Part 2 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct2Plus" aria-label="Increase Part 2 octave">+</button><select id="oct2" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol2">Volume</label><div class="sliderwrap"><input class="slider" id="vol2Slider" type="range" min="0" max="127" value="100" aria-label="Part 2 Volume slider"><input class="slidernum" id="vol2" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
 </div>
 </section>
-<section class="card">
-<div class="part part-card active-part" id="part1Card" style="margin-top:0">
-<div class="parthead"><button type="button" class="part-select" id="selectPart1" aria-pressed="true">Part 1:</button><div class="patchpicker"><select id="patch1" aria-label="Part 1 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch1" aria-label="Previous Part 1 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch1" aria-label="Next Part 1 patch">▼</button></div></div></div>
-<div class="field patchfield"><label for="cat1">Category:</label><select id="cat1" aria-label="Part 1 category"></select></div>
-<label class="resonance" id="resonanceControl"><input type="checkbox" id="pianoResonance" checked><span class="switchtrack" aria-hidden="true"></span><span id="resonanceText">Piano Resonance Effect: ON</span></label>
-<div class="grid2"><div class="field octrow"><label for="oct1">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct1Minus" aria-label="Decrease Part 1 octave">−</button><span class="digital-display" id="oct1Value" aria-label="Part 1 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct1Plus" aria-label="Increase Part 1 octave">+</button><select id="oct1" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol1">Volume</label><div class="sliderwrap"><input class="slider" id="vol1Slider" type="range" min="0" max="127" value="100" aria-label="Part 1 Volume slider"><input class="slidernum" id="vol1" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
-</div>
-<div class="part part-card" id="part2Card">
-<div class="parthead"><button type="button" class="part-select" id="selectPart2" aria-pressed="false">Part 2:</button><div class="patchpicker"><select id="patch2" aria-label="Part 2 patch"></select><div class="patchnavstack"><button type="button" class="btn patchnav" id="prevPatch2" aria-label="Previous Part 2 patch">▲</button><button type="button" class="btn patchnav" id="nextPatch2" aria-label="Next Part 2 patch">▼</button></div></div></div>
-<div class="field patchfield"><label for="cat2">Category:</label><select id="cat2" aria-label="Part 2 category"></select></div>
-<div class="grid2"><div class="field octrow"><label for="oct2">Octave Shift</label><div class="octcontrol"><button type="button" class="btn stepbtn" id="oct2Minus" aria-label="Decrease Part 2 octave">−</button><span class="digital-display" id="oct2Value" aria-label="Part 2 Octave Shift"></span><button type="button" class="btn stepbtn" id="oct2Plus" aria-label="Increase Part 2 octave">+</button><select id="oct2" class="hidden" aria-hidden="true" tabindex="-1"></select></div></div><div class="field"><label for="vol2">Volume</label><div class="sliderwrap"><input class="slider" id="vol2Slider" type="range" min="0" max="127" value="100" aria-label="Part 2 Volume slider"><input class="slidernum" id="vol2" type="number" min="0" max="127" value="100" inputmode="numeric"></div></div></div>
-</div>
-</section>
-
 </main>
 </div>
 <div class="modalback" id="pressKeyModal" hidden><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="pressKeyTitle"><h2 id="pressKeyTitle">Set Split Point</h2><p>Press a key on the GO:Piano keyboard.</p><div class="notice" id="pressKeyNotice">Waiting for a MIDI note…</div><div class="modalbuttons"><button type="button" class="btn" id="cancelPressKeyBtn">Cancel</button></div></div></div>
