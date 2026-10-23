@@ -18,7 +18,7 @@
 /* v29.1 tab and control styling corrections */
 .part-tabs{gap:0;align-items:stretch;position:relative}
 .part-select{border:1px solid var(--line);border-radius:9px 9px 0 0;min-width:0;position:relative}
-.part-select+ .part-select{margin-left:-1px}
+.part-select+ .part-select{margin-left:0}
 .part-select.active-part{border:1px solid var(--accent);border-bottom-color:var(--panel);background:var(--panel);border-radius:9px 9px 0 0;margin-bottom:-1px;z-index:2}
 /* The panel joins the tabs with square top corners and shares the active blue outline. */
 #partsCard>.part{border-radius:0 0 10px 10px;border-top-color:var(--accent)}
@@ -27,9 +27,11 @@
 .patchfield{grid-template-columns:68px minmax(0,1fr)}
 .patchfield .patchpicker{min-width:0;width:100%;grid-template-columns:minmax(0,1fr) 27px}
 .patchfield select{width:100%;min-width:0}
-/* Match the Reverb Level step buttons, including dimensions and spacing. */
+/* Keep both step-control groups pixel-consistent. */
 .octcontrol{gap:7px}
-.octcontrol .stepbtn{flex:0 0 36px;min-width:36px;width:36px;height:34px;padding:0;font-size:21px;line-height:1;border-radius:8px}
+.reverbbox .stepbtn,.octcontrol .stepbtn{box-sizing:border-box;flex:0 0 36px;min-width:36px;width:36px;height:34px;padding:0;font:inherit;font-size:21px;font-weight:650;line-height:1;border-radius:8px}
+.reverbbox .digital-display,.octcontrol .digital-display{height:24px;gap:2px;align-items:center;justify-content:center}
+.reverbbox .digit,.octcontrol .digit{flex:0 0 11px;width:11px;height:18px}
 
 </style>
 </head>
