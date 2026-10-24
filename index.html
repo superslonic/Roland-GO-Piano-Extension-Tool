@@ -161,14 +161,14 @@ function generate(){const p1=selectedPatch(1),p2=selectedPatch(2);if(!p1||!p2)re
 function renderDigital(id,text){const el=$(id);if(!el)return;const map={"0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc","5":"afgcd","6":"afgecd","7":"abc","8":"abcdefg","9":"abfgcd","-":"g"};el.innerHTML="";for(const ch of String(text)){const d=document.createElement("span");d.className="digit"+(ch==="+"?" plus":"");for(const seg of "abcdefg"){const b=document.createElement("i");b.className="seg "+seg+((map[ch]||"").includes(seg)?" on":"");d.appendChild(b);}el.appendChild(d);}}
 function renderDisplays(){renderDigital("reverbValue",String($("reverb").value).padStart(2,"0"));[1,2].forEach(part=>{renderDigital("oct"+part+"Value",$("oct"+part).value);});}
 let modWheelPosition=0;
-function modTargetPart(){return mode()==="Single Tone"?activePart:1;}
 function sendModValue(part,value){const out=chosenMidiOutput();if(!out)return;try{sendLogged(out, [part===2?0xB1:0xB0,0x01,Math.max(0,Math.min(127,Number(value)||0))]);}catch(err){$("midiNotice").textContent=`MIDI error: ${err.name||"Error"}: ${err.message||String(err)}`;}}
+function sendModValueForCurrentMode(value){if(mode()==="Layer"){sendModValue(1,value);sendModValue(2,value);}else{sendModValue(activePart,value);}}
 function resetBothModWheels(){modWheelPosition=0;syncModWheel();sendModValue(1,0);sendModValue(2,0);}
 function syncModWheel(){const el=$("modWheel"),v=Math.max(0,Math.min(127,Number(modWheelPosition)||0));$("modWheelFill").style.width=(v/127*100)+"%";el.setAttribute("aria-valuenow",String(v));}
 function resetModForPatch(part){sendModValue(part,0);}
 function changeOctave(part,delta){const id="oct"+part,values=["-3","-2","-1","0","+1","+2","+3"];let idx=values.indexOf($(id).value);idx=Math.max(0,Math.min(values.length-1,idx+delta));if(values[idx]===$(id).value)return;$(id).value=values[idx];updateOutput();scheduleRaw("F0 41 10 00 00 00 3D 12 10 00 "+(part===1?"50 00 ":"51 00 ")+OCTAVE_MAP[$(id).value]+" 00 F7");}
 [1,2].forEach(part=>{ $("oct"+part+"Minus").addEventListener("click",()=>changeOctave(part,-1)); $("oct"+part+"Plus").addEventListener("click",()=>changeOctave(part,1)); });
-function setModWheelFromPointer(e){const el=$("modWheel"),r=el.getBoundingClientRect();if(!r.width)return;const ratio=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));const value=Math.round(ratio*127);if(value===modWheelPosition){syncModWheel();return;}modWheelPosition=value;syncModWheel();sendModValue(modTargetPart(),value);}
+function setModWheelFromPointer(e){const el=$("modWheel"),r=el.getBoundingClientRect();if(!r.width)return;const ratio=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));const value=Math.round(ratio*127);if(value===modWheelPosition){syncModWheel();return;}modWheelPosition=value;syncModWheel();sendModValueForCurrentMode(value);}
 let modWheelPointerActive=false;
 $("modWheel").addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;modWheelPointerActive=true;try{$("modWheel").setPointerCapture(e.pointerId);}catch(_){}setModWheelFromPointer(e);e.preventDefault();});
 $("modWheel").addEventListener("pointermove",e=>{if(modWheelPointerActive)setModWheelFromPointer(e);});
