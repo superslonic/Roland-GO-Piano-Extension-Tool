@@ -213,7 +213,20 @@ function requestPerformanceState(isHome=false){
 function setPatchFromReply(msb,lsb,pcMinusOne){const p=PATCHES.find(x=>x.msb===msb&&x.lsb===lsb&&x.pc-1===pcMinusOne);if(!p)return false;$("cat1").value=p.category;fillPatchSelect(1,p.name);updateResonanceAvailability();updateOutput();return true;}
 function handleMidiMessage(event){
  const d=event&&event.data;if(!d||!d.length)return;
- if(pressKeyListening && (d[0]&0xF0)===0x90 && d.length>=3 && d[2]>0){const note=d[1];const match=Object.entries(SPLIT_MAP).find(([name,val])=>val===note);if(match){$("split").value=match[0];updateOutput();if(mode()==="Split")actionMessages("split").forEach(scheduleRaw);closePressKeyModal();return;}}
+ if(pressKeyListening && (d[0]&0xF0)===0x90 && d.length>=3 && d[2]>0){
+  const channel=d[0]&0x0F;
+  // GO:Piano sends Part 1 on MIDI channel 1 (index 0) and Part 2 on channel 2 (index 1).
+  // The received note already includes that Part's Octave Shift, so undo it before
+  // mapping the physical key to a Split Point.
+  if(channel===0||channel===1){
+   const part=channel===0?1:2;
+   const octaveShift=Number($("oct"+part).value);
+   const note=d[1]-(12*octaveShift);
+   const match=Object.entries(SPLIT_MAP).find(([name,val])=>val===note);
+   if(match){$("split").value=match[0];updateOutput();if(mode()==="Split")actionMessages("split").forEach(scheduleRaw);closePressKeyModal();return;}
+   $("pressKeyNotice").textContent="That key is outside the available Split Point range. Press another key.";
+  }
+ }
  if(identityPending && d[0]===0xF0 && d.length>=14 && d[1]===0x7E && d[3]===0x06 && d[4]===0x02){identityPending=false;clearTimeout(identityTimer);const supported=d[5]===0x41&&d[6]===0x3D;if(supported){identityAccepted=true;initializeDevice();$("midiNotice").textContent="Roland GO:Piano detected. Connected.";}else{identityAccepted=false;$("midiNotice").style.display="block";$("midiNotice").textContent="This device is not supported. Please connect a Roland GO:Piano.";$("midiStatus").textContent="Unsupported device";}return;}
 
  // HOME normally starts with CC 0 / value 0x55 on channel 16.
